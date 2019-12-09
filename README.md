@@ -1,6 +1,6 @@
 # [Challenge] 1209 Express MVC & MongoDB
 ---
-##### Morning Challenge: https://coderacademy.instructure.com/courses/239/pages/express-mvc-and-mongodb?module_item_id=9456
+### Morning Challenge: https://coderacademy.instructure.com/courses/239/pages/express-mvc-and-mongodb?module_item_id=9456
 
 ##### Core:
 * ##### Create an Express web server that is able to handle a full CRUD (create, read, update, delete) resource named Tweet
@@ -11,7 +11,7 @@
 ---
 ### Initial Setting
 
-- create a directory for this project (can be named anything)
+- Create a directory for this project (can be named anything)
 ```
 $ mkdir express-server-CRUD
 ```
@@ -33,19 +33,19 @@ node_modules
 ```
 
 - Install dependency (production and development)
-•	Express - Node web server framework to make routing easier and adds a bunch more functionality.
-•	Body-parser - Middleware used to change the data on the request from a steam into usable data available at response.body
-•	[Optional - not required to use it as per challenge instructions] Express-handlebar - JavaScript templating engine for serving up our html web pages
+1. Express - Node web server framework to make routing easier and adds a bunch more functionality.
+2. Body-parser - Middleware used to change the data on the request from a steam into usable data available at response.body
+3. [Optional] Express-handlebar - JavaScript templating engine for serving up our html web pages
 
 ```
 $ npm install --save express body-parser express-handlebars
 ```
 - You can install several dependencies at the same time
-- (Afer npm 5, you can skip '--save') Refer here for more details about the npm install command: https://stackoverflow.com/questions/19578796/what-is-the-save-option-for-npm-install
+- (After npm 5, you can skip '--save') Refer here for more details about the npm install command: https://stackoverflow.com/questions/19578796/what-is-the-save-option-for-npm-install
 
 - Install development dependency
-•	Nodemon - Watches for changes in our JS file and auto restarts our server when it detects them. (Saves us from manually stopping and starting the server).
-•	Forever - Makes sure that if the server crashes it will automatically restart
+1. Nodemon - Watches for changes in our JS file and auto restarts our server when it detects them. (Saves us from manually stopping and starting the server).
+2. Forever - Makes sure that if the server crashes it will automatically restart
 
 ```
 $ npm install --save-dev nodemon forever
@@ -73,4 +73,8 @@ npm run dev
 ```
 ---
 
-### app.js
+### Create Express Server
+
+1. Create basics commands and routes in 'app.js'
+2. [Optional] Work on 'views' - 'layouts'/'tweets' (handlebars)
+<!-- 3. Separate routes into 'routes.js' -->
