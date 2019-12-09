@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router(); //router comes from Express, so we need to require express first
 const TweetController = require("./controllers/tweet_controller");
 
-// router.get("/", (req, res) => {
-//     res.render("tweet")
-// })
+router.get("/", (req, res) => {
+    res.send("Landing Page")
+})
 
 //Get route to show all tweets
 router.get("/tweets", TweetController.index)

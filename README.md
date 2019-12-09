@@ -79,4 +79,26 @@ npm run dev
 2. [Optional] Complete Views: 'layouts'/'tweets' (handlebars)
 3. Separate routes into 'routes.js'
 4. Create Controller & move our business logic from routes.js to controllers\tweet_controller.js
-5. 
+5. Mongo DB/Mongoose
+
+5-1. Install Mongoose to connect our app with Mongo DB
+```
+npm install mongoose --save
+```
+5-2. Add the following code into 'app.js'
+```javascript
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost/tweet_app", { useNewUrlParser: true });
+mongoose.Promise = global.Promise;
+mongoose.connection.on("error", (error)=> {console.log(error)});
+
+```
+5-3.
+- Stop your experss server
+- Run 'mongod' in a terminal window
+- Restart your express server in another terminal window
+
+```
+to be continued...
+```

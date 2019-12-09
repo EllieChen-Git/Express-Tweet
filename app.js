@@ -5,6 +5,11 @@ const exphbs = require("express-handlebars"); // [handlebars - optional]
 const app = express();
 const port = 3000;
 const routes = require("./routes");
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost/tweet_app", { useNewUrlParser: true });
+mongoose.Promise = global.Promise;
+mongoose.connection.on("error", (error)=> {console.log(error)});
 
 // [handlebars - optional]
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
