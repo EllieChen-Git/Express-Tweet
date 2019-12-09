@@ -75,7 +75,8 @@ npm run dev
 
 ### Create Express Server
 
-1. Create basics commands and routes in 'app.js'
-2. [Optional] Work on 'views' - 'layouts'/'tweets' (handlebars)
+1. Create basic commands and routes in 'app.js'
+2. [Optional] Complete Views: 'layouts'/'tweets' (handlebars)
 3. Separate routes into 'routes.js'
-<!-- 4. Create controller -->
+4. Create Controller & move our business logic from routes.js to controllers\tweet_controller.js
+5. 
