@@ -15,4 +15,7 @@ router.post("/tweets", TweetController.create)
 //Get route for 'create form'
 router.get("/tweets/new", TweetController.newResource)
 
+//Get route to show a tweet
+// router.get("/tweets/:id", TweetController.show)
+
 module.exports = router;

@@ -1,15 +1,20 @@
-const tweets = [];
+const TweetModel = require("./../database/models/tweet_model")
 
-function index(req, res){
+async function index(req, res){
+    const tweets = await TweetModel.find();
     res.render("tweets/index", { tweets }); //{ tweets }: short hand when an obj's key is same as value
 }
 
-function create(req, res){
+async function create(req, res) {
     const { username, post } = req.body;
-    const tweet = {username, post };
-    tweets.push(tweet);
+    const newTweet = { username, post };
 
-    res.redirect("/tweets");
+    try {
+        const tweet = await TweetModel.create(newTweet);
+        res.redirect("/tweets")
+    } catch(err) {
+        res.status(500).send(`Error: ${err}`)
+    }
 }
 
 function newResource(req, res){
