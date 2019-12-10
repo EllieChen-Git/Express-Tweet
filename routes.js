@@ -16,6 +16,18 @@ router.post("/tweets", TweetController.create)
 router.get("/tweets/new", TweetController.newResource)
 
 //Get route to show a tweet
-// router.get("/tweets/:id", TweetController.show)
+router.get("/tweets/:id", TweetController.show)
+
+//Delete route to delete a tweet
+router.delete("/tweets/:id", TweetController.destroy)
+
+//Get route for 'edit form'
+router.get("/tweets/:id/edit", TweetController.edit)
+
+//PATCH route to update a tweet
+router.patch("/tweets/:id", TweetController.update)
+
+//PUT route to update a tweet
+router.put("/tweets/:id", TweetController.update)
 
 module.exports = router;

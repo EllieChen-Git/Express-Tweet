@@ -1,28 +1,56 @@
 const TweetModel = require("./../database/models/tweet_model")
 
-async function index(req, res){
+async function index(req, res) {
     const tweets = await TweetModel.find();
-    res.render("tweets/index", { tweets }); //{ tweets }: short hand when an obj's key is same as value
+    res.render("tweets/index", { tweets }); //{ tweets }: shorthand when an object's key is same as value
 }
 
 async function create(req, res) {
-    const { username, post } = req.body;
-    const newTweet = { username, post };
+    let { username, post } = req.body;
+    let newTweet = await TweetModel.create({ username, post })
+        .catch(err => res.status(500).send(err));
 
-    try {
-        const tweet = await TweetModel.create(newTweet);
-        res.redirect("/tweets")
-    } catch(err) {
-        res.status(500).send(`Error: ${err}`)
-    }
+    res.redirect("/tweets");
 }
 
 function newResource(req, res){
-    res.render("tweets/form");
+    res.render("tweets/new");
+}
+
+async function show(req, res){
+    let { id } = req.params;
+    let tweet = await TweetModel.findById(id);
+    res.render("tweets/show", { tweet })
+
+}
+
+async function destroy(req, res){
+    let { id } = req.params;
+    await TweetModel.findByIdAndRemove(id);
+    redirect("/tweets")
+}
+
+async function edit(req, res){
+    let { id } = req.params;
+    let tweet = await TweetModel.findById(id);
+
+    res.render("tweets/edit", { tweet })
+}
+
+async function update(req, res){
+    let { username, post } = req.body;
+    let { id } = req.params;
+    await TweetModel.findByIdAndUpdate(id, { username, post });
+
+    res.redirect(`/tweets/${id}`);
 }
 
 module.exports = {
     index,
     create,
-    newResource
+    newResource,
+    show,
+    destroy,
+    edit,
+    update
 }

@@ -234,15 +234,93 @@ module.exports = {
 ---
 
 ### Core - Basic CURD (Show a tweet, Update a tweet & Delete tweets)
-```
-to be continued...
-```
 
-
-<!-- - Show method
-
-1. routes.js
+1. Add the rest CURD routes in 'routes.js'
 ```javascript
 //Get route to show a tweet
 router.get("/tweets/:id", TweetController.show)
-``` -->
+
+//Delete route to delete a tweet
+router.delete("/tweets/:id", TweetController.destroy)
+
+//Get route for 'edit form'
+router.get("/tweets/:id/edit", TweetController.edit)
+
+//PATCH route to update a tweet
+router.patch("/tweets/:id", TweetController.update)
+
+//PUT route to update a tweet
+router.put("/tweets/:id", TweetController.update)
+```
+
+2. Add async functions in 'tweet_controller.js' & remember to export them
+```javascript
+const TweetModel = require("./../database/models/tweet_model")
+
+async function index(req, res) {
+    const tweets = await TweetModel.find();
+    res.render("tweets/index", { tweets }); //{ tweets }: shorthand when an object's key is same as value
+}
+
+async function create(req, res) {
+    const { username, post } = req.body;
+    const newTweet = await TweetModel.create({ username, post })
+        .catch(err => res.status(500).send(err));
+
+    res.redirect("/tweets");
+}
+
+function newResource(req, res){
+    res.render("tweets/new");
+}
+
+async function show(req, res){
+    let { id } = req.params;
+    let tweet = await TweetModel.findById(id);
+    res.render("tweets/show", { tweet })
+
+}
+
+async function destroy(req, res){
+    let { id } = req.body;
+    await TweetModel.findByIdAndRemove(id);
+
+    redirect("/tweets")
+}
+
+async function edit(req, res){
+    let { id } = req.body;
+    let tweet = TweetModel.findById(id);
+
+    res.render("/tweets/edit", { tweet })
+}
+
+async function update(req, res){
+    let { username, post } = req.body;
+    let { id } = req.params;
+    await TweetModel.findByIdAndUpdate(id, { username, post });
+
+    res.redirect(`/tweets/${id}`);
+}
+
+module.exports = {
+    index,
+    create,
+    newResource,
+    show,
+    destroy,
+    edit,
+    update
+}
+```
+
+3. create the view
+- Update views\tweets\index.handlebars
+- Create views\tweets\show.handlebars
+- Create views\tweets\edit.handlebars
+
+Problems to Solve
+```
+1. delete function works as view
+2. edit function works as new
+```

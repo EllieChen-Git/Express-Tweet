@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Tweet App</title>
 </head>
 <body>
+    <a href="/tweets/new">Create New Tweet</a>
     <h1>All Tweets</h1>
     <ul>
         {{#each tweets}}
             <li>{{this.username}} - {{this.post}}</li>
+            <a href="/tweets/{{this._id}}">View Tweet</a>
+            <a href="/tweets/{{this._id}}?_method=DELETE">Delete</a>
+            <a href="/tweets/{{this._id}}/edit">Edit</a>
         {{/each }}
     </ul>
 </body>
