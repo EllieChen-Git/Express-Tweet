@@ -332,3 +332,16 @@ module.exports = {
 - Update views\tweets\index.handlebars
 - Create views\tweets\show.handlebars
 - Create views\tweets\edit.handlebars
+
+---
+### Optional - Normalising and Denormalisting
+
+1. Create a 'routes' folder, move 'routes.js' inside, and rename it to 'index.js'
+
+routes\index.js
+```javascript
+const TweetController = require("./../controllers/tweet_controller");
+// remember to change the require path here so our app still works
+```
+
+2. Inside a 'routes' folder, create a 'tweet_routes.js' file to separate our routes
