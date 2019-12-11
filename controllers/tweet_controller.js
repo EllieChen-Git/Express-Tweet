@@ -27,7 +27,7 @@ async function show(req, res){
 async function destroy(req, res){
     let { id } = req.params;
     await TweetModel.findByIdAndRemove(id);
-    redirect("/tweets")
+    res.redirect("/tweets")
 }
 
 async function edit(req, res){
