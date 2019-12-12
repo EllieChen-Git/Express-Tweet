@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const TweetController = require("./../controllers/tweet_controller");
 
-// const methodOverride = require("method-override")
-
 //Get route to show all tweets
 router.get("/", TweetController.index)
 

@@ -249,7 +249,6 @@ app.use(methodOverride('_method', { methods: ['POST', 'GET']}));
 
 __1. Add the rest CURD routes in 'routes.js'__
 ```javascript
-const methodOverride = require("method-override") // remember to require methodOverride on routes
 
 //Get route to show a tweet
 router.get("/tweets/:id", TweetController.show)
@@ -345,6 +344,8 @@ const TweetController = require("./../controllers/tweet_controller");
 ```
 
 __2. Inside a 'routes' folder, create a 'tweet_routes.js' file to separate our routes__
+
+__3. Create a second model to practice normalising and normalising__
 ```
 to do
 ```
