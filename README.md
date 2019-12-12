@@ -11,7 +11,7 @@
 ---
 ### Core - Initial Setting
 
-1. __Create a directory for this project (can be named anything)__
+__1. Create a directory for this project (can be named anything)__
 ```
 $ mkdir express-server-CRUD
 ```
@@ -23,16 +23,7 @@ $ mkdir express-server-CRUD
 $ npm init -y
 ```
 
-2. __[Important] Create a .gitignore file in root directory__
-```
-$ touch .gitignore
-```
-- Write 'node_modules' inside .gitignore, as we don't wanna push our node modules to GitHub 
-```
-node_modules
-```
-
-3. __Install dependency (production and development)__
+__2. Install dependencies (production and development)__
 - __Express__ - Node web server framework to make routing easier and adds a bunch more functionality.
 - __Body-parser__ - Middleware used to change the data on the request from a steam into usable data available at response.body
 - [Optional - not required for this challenge] __Express-handlebar__ - JavaScript templating engine for serving up our html web pages
@@ -43,7 +34,7 @@ $ npm install --save express body-parser express-handlebars
 - You can install several dependencies at the same time.
 - (After npm 5, you can skip '--save') Refer here for more details about the npm install commands: https://stackoverflow.com/questions/19578796/what-is-the-save-option-for-npm-install
 
-4. __Install development dependency__
+__3. Install development dependencies__
 - __Nodemon__ - Watches for changes in our JS file and auto restarts our server when it detects them. (Saves us from manually stopping and starting the server).
 - __Forever__ - Makes sure that if the server crashes it will automatically restart.
 
@@ -51,7 +42,16 @@ $ npm install --save express body-parser express-handlebars
 $ npm install --save-dev nodemon forever
 ```
 
-5. __Set up package.json__
+__4. [Important] Create a .gitignore file in root directory__
+```
+$ touch .gitignore
+```
+- Write 'node_modules' inside .gitignore, as we don't wanna push our node modules to GitHub 
+```
+node_modules
+```
+
+__5. Set up package.json__
 - Create our own npm run script in package.json
 - [Optional] Also remember to change your app entry point to 'app.js', as we are creating an 'app.js' file here. By default, the entry point is 'index.js'. You can keep the default name, but remember to name your file as 'index.js'.
 
@@ -76,10 +76,10 @@ npm run dev
 
 ### Core - Basic CURD (Read all tweets & Create new Tweets)
 
-1. __Create basic commands and routes in 'app.js'__
-2. __[Optional] Complete Views (layouts/tweets) with handlebars__
-3. __Separate routes into 'routes.js'__
-4. __Create Controller & move our business logic from routes.js to controllers\tweet_controller.js__
+__1. Create basic commands and routes in 'app.js'__
+__2. [Optional] Complete Views (layouts/tweets) with handlebars__
+__3. Separate routes into 'routes.js'__
+__4. Create Controller & move our business logic from routes.js to controllers\tweet_controller.js__
 
 controllers\tweet_controller.js
 ```javascript
@@ -111,12 +111,12 @@ module.exports = {
 ### Advanced - Implement MongoDB
 - Mongoose: object data modelling tool
 
-1. __Install Mongoose to connect our app to MongoDB__
+__1. Install Mongoose to connect our app to MongoDB__
 ```
 npm install mongoose --save
 ```
 
-2. __Add the following code into 'app.js'__
+__2. Add the following code into 'app.js'__
 ```javascript
 const mongoose = require("mongoose");
 
@@ -125,12 +125,12 @@ mongoose.Promise = global.Promise;
 mongoose.connection.on("error", (error)=> {console.log(error)});
 ```
 
-3. __Start MongoDB__
+__3. Start MongoDB__
 - Stop your express server
 - Run 'mongod' in a terminal window
 - Restart your express server ('npm run dev') in another terminal window
 
-4. __Create Database & Schema__
+__4. Create Database & Schema__
 - Create a folder called 'database'
 - Inside 'database', create a folder called 'schemas'
 - Inside 'schemas', create a file called 'tweet_schema.js'
@@ -155,7 +155,7 @@ const TweetSchema = new Schema({
 module.exports = TweetSchema; //schema is not a model: we turn some schemas into models
 ```
 
-5. __[G's convention] Create Model in a separate folder__
+__5. [G's convention] Create Model in a separate folder__
 - Inside 'database', create a folder called 'models'
 - Inside 'models', create a file called 'tweet_model.js'
 
@@ -170,7 +170,7 @@ const TweetModel = mongoose.model("tweet", TweetSchema);
 module.exports = TweetModel;
 ```
 
-6. __Modify controller__
+__6. Modify controller__
 
 - controllers\tweet_controller.js [in progress]
 ```javascript
@@ -235,7 +235,7 @@ module.exports = {
 
 ### Core - Basic CURD (Show a tweet, Update a tweet & Delete tweets)
 
-0. __Install method-override__
+__0. Install method-override__
 ```
 npm i method-override
 ```
@@ -247,9 +247,9 @@ const methodOverride = require("method-override")
 app.use(methodOverride('_method', { methods: ['POST', 'GET']}));
 ```
 
-1. __Add the rest CURD routes in 'routes.js'__
+__1. Add the rest CURD routes in 'routes.js'__
 ```javascript
-const methodOverride = require("method-override") // remember to reuire methodOverride on routes
+const methodOverride = require("method-override") // remember to require methodOverride on routes
 
 //Get route to show a tweet
 router.get("/tweets/:id", TweetController.show)
@@ -267,7 +267,7 @@ router.patch("/tweets/:id", TweetController.update)
 router.put("/tweets/:id", TweetController.update)
 ```
 
-2. __Add async functions in 'tweet_controller.js' & remember to export them__
+__2. Add async functions in 'tweet_controller.js' & remember to export them__
 ```javascript
 const TweetModel = require("./../database/models/tweet_model")
 
@@ -328,7 +328,7 @@ module.exports = {
 }
 ```
 
-3. __create the view__
+__3. create the view__
 - Update views\tweets\index.handlebars
 - Create views\tweets\show.handlebars
 - Create views\tweets\edit.handlebars
@@ -336,7 +336,7 @@ module.exports = {
 ---
 ### Optional - Normalising and Denormalisting
 
-1. Create a 'routes' folder, move 'routes.js' inside, and rename it to 'index.js'
+__1. Create a 'routes' folder, move 'routes.js' inside, and rename it to 'index.js'__
 
 routes\index.js
 ```javascript
@@ -344,4 +344,7 @@ const TweetController = require("./../controllers/tweet_controller");
 // remember to change the require path here so our app still works
 ```
 
-2. Inside a 'routes' folder, create a 'tweet_routes.js' file to separate our routes
+__2. Inside a 'routes' folder, create a 'tweet_routes.js' file to separate our routes__
+```
+to do
+```

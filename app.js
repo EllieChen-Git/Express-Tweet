@@ -8,7 +8,13 @@ const routes = require("./routes");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 
-mongoose.connect("mongodb://localhost/tweet_app", { useNewUrlParser: true });
+//Database
+mongoose.connect("mongodb://localhost/tweet_app", { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true //use new Server Discover and Monitoring engine
+});
+
+//Promise library
 mongoose.Promise = global.Promise;
 mongoose.connection.on("error", (error)=> {console.log(error)});
 
@@ -18,12 +24,14 @@ app.set("view engine", "handlebars");
 
 app.use(methodOverride("_method", { methods: ["POST", "GET"]}));
 
-//Use ".use" when we wanna use middleware globally
+//Body Parser
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
+//Routes
 app.use(routes);
 
+//Port
 app.listen(port, ()=>{
     console.log(`Server is running on port ${port}`)
 })
