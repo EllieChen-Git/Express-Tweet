@@ -567,8 +567,42 @@ describe("User creates a new tweet", ()=>{
 - Passed Integration Test - Create 
 ![integration-testing](./docs/integration-testing.JPG)
 
-__5.4 (Best Practice) Crate a 'connection.js' file__
+__5.4 (Best Practice) Crate a 'connection.js' file inside 'database' diretory__
 
+database\connection.js
+```javascript
+const mongoose = require("mongoose");
+
+//Database
+async function connect(dbName){
+    await mongoose.connect(`mongodb://localhost/${dbName}`, { 
+        useNewUrlParser: true,
+        useUnifiedTopology: true 
+    });
+    mongoose.Promise = global.Promise;
+    mongoose.connection.on("error", (error)=> {console.log(error)});
+    return mongoose;
+}
+
+module.exports = connect;
+```
+
+index.js
+```javascript
+const dbConnect = require("./database/connection")
+dbConnect("tweet_app")
+
+//App.js
+const app = require("./app"); //Require our app.js file here
+
+//Port
+const port = 3000;
+app.listen(port, ()=>{
+    console.log(`Server is running on port ${port}`)
+}); 
+```
+
+- Still passed both tests
 __.__
 __.__
 __.__
