@@ -131,8 +131,8 @@ __3. Start MongoDB__
 - Restart your express server ('npm run dev') in another terminal window
 
 __4. Create Database & Schema__
-- Create a folder called 'database'
-- Inside 'database', create a folder called 'schemas'
+- Create a directory called 'database'
+- Inside 'database', create a directory called 'schemas'
 - Inside 'schemas', create a file called 'tweet_schema.js'
 
 database\schemas\tweet_schema.js
@@ -155,8 +155,8 @@ const TweetSchema = new Schema({
 module.exports = TweetSchema; //schema is not a model: we turn some schemas into models
 ```
 
-__5. [G's convention] Create Model in a separate folder__
-- Inside 'database', create a folder called 'models'
+__5. [G's convention] Create Model in a separate directory__
+- Inside 'database', create a directory called 'models'
 - Inside 'models', create a file called 'tweet_model.js'
 
 database\models\tweet_model.js
@@ -335,7 +335,7 @@ __3. create the view__
 ---
 ### Optional - Normalising and Denormalisting
 
-__1. Create a 'routes' folder, move 'routes.js' inside, and rename it to 'index.js'__
+__1. Create a 'routes' directory, move 'routes.js' inside, and rename it to 'index.js'__
 
 routes\index.js
 ```javascript
@@ -343,7 +343,7 @@ const TweetController = require("./../controllers/tweet_controller");
 // remember to change the require path here so our app still works
 ```
 
-__2. Inside a 'routes' folder, create a 'tweet_routes.js' file to separate our routes__
+__2. Inside a 'routes' directory, create a 'tweet_routes.js' file to separate our routes__
 
 __3. Create a second model to practice normalising and normalising__
 ```
@@ -351,7 +351,7 @@ to do
 ```
 
 ---
-### Optional - Testing
+### Optional - Jest Testing
 __1. Install Jest__
 ```
 npm install jest --save-dev
@@ -376,9 +376,41 @@ module.exports = {
 ```
 $ npm run server
 ```
-- 
-__.__
-__.__
+__4. Set up test file structure__
+- Create 'tests' diretory at root
+- Inside 'tests' directory, create a 'unit' directory (to store all of our unit tests).
+- Inside 'unit' directory, create a 'controllers' directory (to store all of our unit tests for our controllers).
+- Inside 'controllers' directory, create a 'tweet_controller.test.js' file (to store all of our tests for the TweetController)
+
+__5. Unit testing - TweetController.index() method__
+
+- tweet_controller.test.js
+
+```javascript
+    const TweetController = require("./../../../controllers/tweet_controller");
+    const TweetModel = require("./../../../database/models/tweet_model");
+
+    describe("TweetController", ()=>{
+        describe("index()", ()=>{
+            test("calls res.render()", async()=>{
+                const res = {
+                    render: jest.fn()
+                };
+
+                const tweets = [];
+                TweetModel.find = jest.fn().mockResolvedValue(tweets);
+
+                await TweetController.index(null, res);
+                expect(TweetModel.find).toBeCalledTimes(1);
+                expect(res.render).toHaveBeenLastCalledWith("tweets/index", { tweets }); //make sure args were passed to the function.
+            })
+
+        });
+    });
+```
+- Passed the TweetController.index() method unit test 
+![UnitTesting](./docs/unit-testing.JPG)
+
 __.__
 
 
