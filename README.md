@@ -9,7 +9,7 @@
 
 ---
 
-##### 1209 Express MVC & MongoDB Morning Challenge: https://coderacademy.instructure.com/courses/239/pages/express-mvc-and-mongodb?module_item_id=9456
+### 1209 Express MVC & MongoDB Morning Challenge: https://coderacademy.instructure.com/courses/239/pages/express-mvc-and-mongodb?module_item_id=9456
 
 ##### Core:
 * ##### Create an Express web server that is able to handle a full CRUD (create, read, update, delete) resource named Tweet
@@ -369,7 +369,7 @@ to do
 ### Optional - Jest Testing 
 
 ---
-##### 1213 Jest & BDD - Afternoon Challenge: https://coderacademy.instructure.com/courses/239/pages/jest-and-bdd?module_item_id=9459
+### 1213 Jest & BDD - Afternoon Challenge: https://coderacademy.instructure.com/courses/239/pages/jest-and-bdd?module_item_id=9459
 
 ##### Core:
 ##### 1. Write an API (no rendered html only JSON data returned) that creates a full CRUD resource for Pokemon (Note: Decided to continue with my Express-Tweet project instead).
