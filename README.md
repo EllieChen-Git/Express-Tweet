@@ -64,13 +64,13 @@ touch app.js
 "main": "app.js",
 
  "scripts": {
-    "dev": "forever -c \"nodemon --exitcrash -L\" app.js"
+    "server": "forever -c \"nodemon --exitcrash -L\" app.js"
   },
 ```
 
 - After that, we can run our npm script with the following command
 ```
-npm run dev
+npm run server
 ```
 ---
 
@@ -349,3 +349,40 @@ __3. Create a second model to practice normalising and normalising__
 ```
 to do
 ```
+
+---
+### Optional - Testing
+__1. Install Jest__
+```
+npm install jest --save-dev
+```
+__2. Use Jest as our test runner__
+package.json
+```
+  "scripts": {
+        "test": "jest --coverage",
+    }
+```
+__3. Make Jest run correctly in Node environment__
+- Add a configuration file 'jest.config.js' to the root.
+- Write code below in 'jest.config.js'
+```
+module.exports = {
+    testEnvironment: "node",
+    verbose: true //Display individual test results with the test suite hierarchy.
+};
+```
+- Make sure you have 'mongod' running before you run the server
+```
+$ npm run server
+```
+- 
+__.__
+__.__
+__.__
+
+
+__.__
+__.__
+__.__
+__.__
