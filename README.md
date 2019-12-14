@@ -1,6 +1,15 @@
-# [Challenge] 1209 Express MVC & MongoDB
+# Express Tweets
+
+- Full CRUD resources (create, read, update and delete tweets).
+- [Optional] HTML pages with express-handlebars.
+- MongoDB database implemented.
+- Document database normalising and denormalising (work in progress).
+- Jest unit testing.
+- Jest integration testing (work in progress).
+
 ---
-### Morning Challenge: https://coderacademy.instructure.com/courses/239/pages/express-mvc-and-mongodb?module_item_id=9456
+
+##### 1209 Express MVC & MongoDB Morning Challenge: https://coderacademy.instructure.com/courses/239/pages/express-mvc-and-mongodb?module_item_id=9456
 
 ##### Core:
 * ##### Create an Express web server that is able to handle a full CRUD (create, read, update, delete) resource named Tweet
@@ -74,7 +83,7 @@ npm run server
 ```
 ---
 
-### Core - Basic CURD (Read all tweets & Create new Tweets)
+### Core - Basic CRUD (Create new Tweets & Read all tweets)
 
 __1. Create basic commands and routes in 'app.js'__
 __2. [Optional] Complete Views (layouts/tweets) with handlebars__
@@ -170,7 +179,9 @@ const TweetModel = mongoose.model("tweet", TweetSchema);
 module.exports = TweetModel;
 ```
 
-__6. Modify controller__
+__6. Modify controller & update functions to async-await__
+- Remember to modify the path to require model in controller
+- (Later) Remember to use 'try-catch' to handle errors
 
 - controllers\tweet_controller.js [in progress]
 ```javascript
@@ -233,7 +244,7 @@ module.exports = {
 
 ---
 
-### Core - Basic CURD (Show a tweet, Update a tweet & Delete tweets)
+### Core - Basic CURD (Show, Update & Delete a tweet)
 
 __0. Install method-override__
 ```
@@ -327,13 +338,16 @@ module.exports = {
 }
 ```
 
-__3. create the view__
-- Update views\tweets\index.handlebars
-- Create views\tweets\show.handlebars
-- Create views\tweets\edit.handlebars
+__3. Complete the rest of the view__
+- Update 'views\tweets\index.handlebars'
+- Create 'views\tweets\show.handlebars'
+- Create 'views\tweets\edit.handlebars'
 
 ---
-### Optional - Normalising and Denormalisting
+### Optional - Normalising and Denormalising
+https://coderacademyedu.github.io/resources/unit_mongoose_relationships.html
+
+
 
 __1. Create a 'routes' directory, move 'routes.js' inside, and rename it to 'index.js'__
 
@@ -351,7 +365,25 @@ to do
 ```
 
 ---
-### Optional - Jest Testing
+
+### Optional - Jest Testing 
+
+---
+##### 1213 Jest & BDD - Afternoon Challenge: https://coderacademy.instructure.com/courses/239/pages/jest-and-bdd?module_item_id=9459
+
+##### Core:
+##### 1. Write an API (no rendered html only JSON data returned) that creates a full CRUD resource for Pokemon (Note: Decided to continue with my Express-Tweet project instead).
+##### 2. Write your integration tests before writing any logic in your controller or routes. 
+##### 3. Before moving on to the next endpoint make sure you have a minimum of 70% code coverage.
+
+##### Advanced:
+##### Write unit tests for your controllers as well.
+
+##### Expert:
+##### Add validation to your endpoints and write passing tests for invalid data.
+
+---
+
 __1. Install Jest__
 ```
 npm install jest --save-dev
@@ -363,7 +395,7 @@ package.json
         "test": "jest --coverage",
     }
 ```
-__3. Make Jest run correctly in Node environment__
+__3. Make sure Jest run correctly in Node environment__
 - Add a configuration file 'jest.config.js' to the root.
 - Write code below in 'jest.config.js'
 ```
@@ -377,7 +409,7 @@ module.exports = {
 $ npm run server
 ```
 __4. Set up test file structure__
-- Create 'tests' diretory at root
+- Create 'tests' directory at root
 - Inside 'tests' directory, create a 'unit' directory (to store all of our unit tests).
 - Inside 'unit' directory, create a 'controllers' directory (to store all of our unit tests for our controllers).
 - Inside 'controllers' directory, create a 'tweet_controller.test.js' file (to store all of our tests for the TweetController)
@@ -411,10 +443,16 @@ __5. Unit testing - TweetController.index() method__
 - Passed the TweetController.index() method unit test 
 ![UnitTesting](./docs/unit-testing.JPG)
 
-__.__
+__6. Integration Testing__
 
 
+<!-- __.__
 __.__
 __.__
 __.__
+
 __.__
+__.__
+__.__
+__.__ -->
+
