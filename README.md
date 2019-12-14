@@ -670,6 +670,7 @@ describe("Received all tweets", ()=>{
 });
 ```
 - Passed Integration Test - Index (Test 3)
+
 ![integration-testing-index](./docs/integration-testing-index.JPG)
 
 <!-- __.__
