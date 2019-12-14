@@ -10,7 +10,8 @@ async function create(req, res) {
     let newTweet = await TweetModel.create({ username, post })
         .catch(err => res.status(500).send(err));
 
-    res.redirect("/tweets");
+    // res.redirect("/tweets");
+    res.redirect(`/tweets/${newTweet._id}`);
 }
 
 function newResource(req, res){

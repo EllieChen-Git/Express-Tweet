@@ -385,6 +385,8 @@ to do
 ---
 
 __1. Install Jest__
+- Jest: Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
+
 ```
 npm install jest --save-dev
 ```
@@ -408,16 +410,15 @@ module.exports = {
 ```
 $ npm run server
 ```
-__4. Set up test file structure__
+__4. Unit testing (Jest)__
+__4.1 Setting up file structure__
 - Create 'tests' directory at root
 - Inside 'tests' directory, create a 'unit' directory (to store all of our unit tests).
 - Inside 'unit' directory, create a 'controllers' directory (to store all of our unit tests for our controllers).
 - Inside 'controllers' directory, create a 'tweet_controller.test.js' file (to store all of our tests for the TweetController)
 
-__5. Unit testing - TweetController.index() method__
-
-- tweet_controller.test.js
-
+__4.2 Unit testing - TweetController.index() method__
+tweet_controller.test.js
 ```javascript
     const TweetController = require("./../../../controllers/tweet_controller");
     const TweetModel = require("./../../../database/models/tweet_model");
@@ -443,10 +444,131 @@ __5. Unit testing - TweetController.index() method__
 - Passed the TweetController.index() method unit test 
 ![UnitTesting](./docs/unit-testing.JPG)
 
-__6. Integration Testing__
+__5. Integration Testing (Jest & Supertest)__
+
+__5.1 Setting up file structure__
+- Inside 'tests' directory, create a 'integration' directory (to store all of our integration tests).
+- Inside 'integration' directory, create a 'tweets' directory (to store all of our integration tests for our tweets).
+- Inside 'tweets' directory, create a 'create.test.js' file (to test our route that creates tweets.)
+
+__5.2 Install Supertest__
+- Supertest: HTTP assertions made easy via superagent (provide a high-level abstraction for testing HTTP, while still allowing you to drop down to the lower-level API provided by superagent).
+```
+npm install supertest --save-dev
+```
+__5.3 Separate our Express App and Server__
+- Create a 'index.js' at root to run our express app and have our 'app.js' to set up our Express app.
+
+index.js
+```javascript
+//This is now our server
 
 
-<!-- __.__
+const mongoose = require("mongoose");
+const port = 3000;
+
+//Database
+mongoose.connect("mongodb://localhost/tweet_app", { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true //use new Server Discover and Monitoring engine
+});
+mongoose.Promise = global.Promise;
+mongoose.connection.on("error", (error)=> {console.log(error)});
+
+
+//App.js
+const app = require("./app"); //Require our app.js file here
+
+//Port
+app.listen(port, ()=>{
+    console.log(`Server is running on port ${port}`)
+}); 
+```
+
+app.js
+```javascript
+//This is now our Express App
+
+const express = require("express");
+const exphbs = require("express-handlebars"); // [handlebars - optional]
+const bodyParser = require("body-parser");
+const methodOverride = require("method-override");
+const app = express();
+
+
+// [handlebars - optional]
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+// Method Override
+app.use(methodOverride("_method", { methods: ["POST", "GET"]}));
+
+//Body Parser
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.json());
+
+//Routes
+app.use(require("./routes"));
+
+//Remember to export app
+module.exports = app;
+```
+
+- Remember to change your server script (from 'app.js' to 'index.js') in 'package.json'
+
+```javascript
+  "scripts": {
+    "server": "forever -c \"nodemon --exitcrash -L\" index.js"
+  },
+```
+
+__5.3 Write our integration test for create a new tweet__
+
+tests\integration\tweets\create.test.js
+```javascript
+const mongoose = require("mongoose");
+const supertest = require("supertest");
+const app = require("./../../../app");  //Require our Express App
+
+//Jest: set up DB connection before the test
+beforeAll(()=>{ 
+    mongoose.connect("mongodb://localhost/tweet_app", { 
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+    mongoose.Promise = global.Promise;
+    mongoose.connection.on("error", (err)=> {console.log(err)});
+})
+
+//Jest: close DB connection after the test
+afterAll(()=> { 
+    mongoose.connection.close();
+})
+
+//Our actual test here
+describe("User creates a new tweet", ()=>{
+    test("POST /tweets with a valid req bodoy", async()=>{
+        const response = await supertest(app) //Using supertest to run our app
+        .post("/tweets")          //creating post request
+        .send({
+            username: "testingEllie",
+            post: "integration testing"
+        })
+        .expect(302); //Expect: supertest assertion to check res status code. 
+
+        expect(response.body).toEqual({});
+        //Once req is finished, we assert that the res body was empty 
+        expect(response.headers.location).toMatch(/^\/tweets\/.*$/);
+        //the headers location value was “/tweets/:id” because this route redirects to a single tweet once it has been created.(depends on create func on controller)
+    });
+});
+```
+
+- Passed Integration Test - Create 
+![integration-testing](./docs/integration-testing.JPG)
+
+__5.4 (Best Practice) Crate a 'connection.js' file__
+
 __.__
 __.__
 __.__
@@ -454,5 +576,5 @@ __.__
 __.__
 __.__
 __.__
-__.__ -->
+__.__
 

@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --coverage",
-    "server": "forever -c \"nodemon --exitcrash -L\" app.js"
+    "server": "forever -c \"nodemon --exitcrash -L\" index.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "forever": "^1.0.0",
     "jest": "^24.9.0",
-    "nodemon": "^2.0.1"
+    "nodemon": "^2.0.1",
+    "supertest": "^4.0.2"
   }
 }
