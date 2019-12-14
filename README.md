@@ -5,7 +5,7 @@
 - MongoDB database implemented.
 - Document database normalising and denormalising (work in progress).
 - Jest unit testing.
-- Jest integration testing (work in progress).
+- Jest/Supertest integration testing.
 
 ---
 
@@ -372,7 +372,8 @@ to do
 ### 1213 Jest & BDD - Afternoon Challenge: https://coderacademy.instructure.com/courses/239/pages/jest-and-bdd?module_item_id=9459
 
 ##### Core:
-##### 1. Write an API (no rendered html only JSON data returned) that creates a full CRUD resource for Pokemon (Note: Decided to continue with my Express-Tweet project instead).
+##### 1. Write an API (no rendered html only JSON data returned) that creates a full CRUD resource for Pokemon
+ (Note: Decided to continue with my Express-Tweet project instead).
 ##### 2. Write your integration tests before writing any logic in your controller or routes. 
 ##### 3. Before moving on to the next endpoint make sure you have a minimum of 70% code coverage.
 
@@ -410,6 +411,7 @@ module.exports = {
 ```
 $ npm run server
 ```
+---
 __4. Unit testing (Jest)__
 __4.1 Setting up file structure__
 - Create 'tests' directory at root
@@ -441,8 +443,10 @@ tweet_controller.test.js
         });
     });
 ```
-- Passed the TweetController.index() method unit test 
+- Passed the TweetController.index() method unit test (Test 1)
 ![UnitTesting](./docs/unit-testing.JPG)
+
+---
 
 __5. Integration Testing (Jest & Supertest)__
 
@@ -522,7 +526,7 @@ module.exports = app;
   },
 ```
 
-__5.3 Write our integration test for create a new tweet__
+__5.3 Write an integration test - create a new tweet (create.test.js)__
 
 tests\integration\tweets\create.test.js
 ```javascript
@@ -564,10 +568,10 @@ describe("User creates a new tweet", ()=>{
 });
 ```
 
-- Passed Integration Test - Create 
-![integration-testing](./docs/integration-testing.JPG)
+- Passed Integration Test - Create (Test 2)
+![integration-testing-create](./docs/integration-testing-create.JPG)
 
-__5.4 (Best Practice) Crate a 'connection.js' file inside 'database' diretory__
+__5.4 (Optional - Best Practice) Crate a 'connection.js' file inside 'database' diretory__
 
 database\connection.js
 ```javascript
@@ -603,12 +607,76 @@ app.listen(port, ()=>{
 ```
 
 - Still passed both tests
-__.__
-__.__
+
+__5.5 (Optional - Best Practice) Crate a 'setup.js' file inside 'tests' diretory__
+
+tests\setup.js
+```javascript
+const dbConnect = require("./../database/connection");
+
+module.exports = (()=>{
+    let mongoose;
+
+    //Set up DB connection before the test
+    beforeAll(async()=>{ 
+        mongoose = await dbConnect("tweet_app_test");
+    })
+
+    //Close DB connection after the test
+    afterAll(async()=>{
+        await mongoose.connection.close();
+    })
+})()
+```
+
+- Modify tests\integration\tweets\create.test.js accordingly
+```javascript
+const request = require("supertest");
+const app = require("./../../../app");  //Require our Express App
+require("./../../setup")
+
+//Our actual test here
+describe("User creates a new tweet", ()=>{
+    test("POST /tweets with a valid req bodoy", async()=>{
+        const response = await request(app) //Using supertest to run our app
+        .post("/tweets")          //creating post request
+        .send({
+            username: "testingEllie",
+            post: "integration testing"
+        })
+        .expect(302); //Expect: supertest assertion to check res status code. 
+
+        expect(response.body).toEqual({});
+        //Once req is finished, we assert that the res body was empty 
+        expect(response.headers.location).toMatch(/^\/tweets\/.*$/);
+        //the headers location value was “/tweets/:id” because this route redirects to a single tweet once it has been created.(depends on create func on controller)
+    });
+});
+```
+
+__5.6 Write an integration test - index (index.test.js)__
+- inside 'tests\integration\tweets' directory, add 'index.test.js' file
+
+index.test.js
+```javascript
+const request = require("supertest");
+const app = require("./../../../app");
+require("./../../setup");
+
+describe("Received all tweets", ()=>{
+    test("GET /tweets", async()=>{
+        const response = await request(app).get("/tweets").expect(200);
+    });
+});
+```
+- Passed Integration Test - Index (Test 3)
+![integration-testing-index](./docs/integration-testing-index.JPG)
+
+<!-- __.__
 __.__
 
 __.__
 __.__
 __.__
-__.__
+__.__ -->
 

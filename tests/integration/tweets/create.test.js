@@ -1,26 +1,11 @@
-const mongoose = require("mongoose");
-const supertest = require("supertest");
+const request = require("supertest");
 const app = require("./../../../app");  //Require our Express App
-
-//Jest: set up DB connection before the test
-beforeAll(()=>{ 
-    mongoose.connect("mongodb://localhost/tweet_app", { 
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
-    mongoose.Promise = global.Promise;
-    mongoose.connection.on("error", (err)=> {console.log(err)});
-})
-
-//Jest: close DB connection after the test
-afterAll(()=> { 
-    mongoose.connection.close();
-})
+require("./../../setup")
 
 //Our actual test here
 describe("User creates a new tweet", ()=>{
     test("POST /tweets with a valid req bodoy", async()=>{
-        const response = await supertest(app) //Using supertest to run our app
+        const response = await request(app) //Using supertest to run our app
         .post("/tweets")          //creating post request
         .send({
             username: "testingEllie",
