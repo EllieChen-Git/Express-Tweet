@@ -11,11 +11,13 @@
         <h1>All Tweets</h1>
         <ul>
             {{#each tweets}}
-                <li>{{this.username}} - {{this.post}}</li>
-                <a href="/tweets/{{this._id}}">View Tweet</a>
+                <li>{{this.post}}</li>
+                
+                <a href="/tweets/{{this._id}}">View Details</a>
                 <a href="/tweets/{{this._id}}?_method=DELETE">Delete</a>
                 <a href="/tweets/{{this._id}}/edit">Edit</a>
             {{/each }}
-        </ul>
+        </ul>    
+        <button onclick="location.href='http://localhost:3000/users'" type="button">Go to Users</button>
     </body>
 </html>

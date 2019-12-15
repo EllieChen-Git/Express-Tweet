@@ -1,4 +1,5 @@
 const TweetModel = require("./../database/models/tweet_model")
+const UserModel = require("./../database/models/user_model")
 
 async function index(req, res) {
     const tweets = await TweetModel.find();
@@ -6,23 +7,23 @@ async function index(req, res) {
 }
 
 async function create(req, res) {
-    let { username, post } = req.body;
-    let newTweet = await TweetModel.create({ username, post })
+    let { user, post } = req.body;
+    let tweet = await TweetModel.create({ user, post })
         .catch(err => res.status(500).send(err));
 
-    // res.redirect("/tweets");
-    res.redirect(`/tweets/${newTweet._id}`);
+    res.redirect("/tweets");
+    // res.redirect(`/tweets/${tweet._id}`);
 }
 
-function newResource(req, res){
-    res.render("tweets/new");
+async function newResource(req, res){
+    let users = await UserModel.find().select("_id name");
+    res.render("tweets/new", { users });
 }
 
 async function show(req, res){
     let { id } = req.params;
-    let tweet = await TweetModel.findById(id);
+    let tweet = await TweetModel.findById(id).populate("user");
     res.render("tweets/show", { tweet })
-
 }
 
 async function destroy(req, res){
@@ -34,15 +35,13 @@ async function destroy(req, res){
 async function edit(req, res){
     let { id } = req.params;
     let tweet = await TweetModel.findById(id);
-
     res.render("tweets/edit", { tweet })
 }
 
 async function update(req, res){
-    let { username, post } = req.body;
+    let { user, post } = req.body;
     let { id } = req.params;
-    await TweetModel.findByIdAndUpdate(id, { username, post });
-
+    await TweetModel.findByIdAndUpdate(id, { user, post });
     res.redirect(`/tweets/${id}`);
 }
 

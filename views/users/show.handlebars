@@ -7,10 +7,12 @@
         <title>Express Tweets</title>
     </head>
     <body>
-        <h1>Tweet</h1>
-        <p>Tweet: {{tweet.post}}</p>
-        <p>Posted at: {{tweet.createAt}}</p>
-        <p>User: <a href="/users/{{tweet.user._id}}">{{tweet.user.name}}</a></p>
+        <h1>User</h1>
+
+        <p>Name: {{user.name}}</p>
+        <p>Bio: {{user.bio}}</p>
+        <p>Gender: {{user.gender}}</p>
+
         <form>
             {{!-- <input type="button" value="Back" onclick="history.back()"> --}}
             <button onclick="location.href='http://localhost:3000/users'" type="button">Back to Users</button>

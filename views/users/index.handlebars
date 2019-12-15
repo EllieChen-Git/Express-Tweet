@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Express Tweets</title>
+    </head>
+    <body>
+        <div>
+            <a href="/users/new">Create New User</a>
+        </div>
+        <h1>All Users</h1>
+        <ul>
+            {{#each users}}    
+                <li>Name: {{ this.name }}</li>
+                <a href="/users/{{this._id}}">View Details</a>
+                <a href="/users/{{this._id}}?_method=DELETE">Delete</a>
+                <a href="/users/{{this._id}}/edit">Edit</a>
+            {{/each }}
+        </ul>
+        <button onclick="location.href='http://localhost:3000/tweets'" type="button">Go to Tweets</button>
+    </body>
+</html>

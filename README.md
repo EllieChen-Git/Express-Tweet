@@ -1,8 +1,9 @@
 # Express Tweets
 
-- Full CRUD resources (create, read, update and delete tweets).
+- Full CRUD resources (create, read, update and delete tweets and users).
 - [Optional] HTML pages with express-handlebars.
-- MongoDB database implemented.
+- MongoDB database implementation.
+- Dynamic Routing.
 - Document database normalising and denormalising (work in progress).
 - Jest unit testing.
 - Jest/Supertest integration testing.
@@ -83,7 +84,7 @@ npm run server
 ```
 ---
 
-### Core - Basic CRUD (Create new Tweets & Read all tweets)
+### Core - Basic CRUD I (Create new Tweets & Read all tweets)
 
 __1. Create basic commands and routes in 'app.js'__
 __2. [Optional] Complete Views (layouts/tweets) with handlebars__
@@ -244,7 +245,7 @@ module.exports = {
 
 ---
 
-### Core - Basic CURD (Show, Update & Delete a tweet)
+### Core - Basic CRUD II (Show, Update & Delete a tweet)
 
 __0. Install method-override__
 ```
@@ -258,7 +259,7 @@ const methodOverride = require("method-override")
 app.use(methodOverride('_method', { methods: ['POST', 'GET']}));
 ```
 
-__1. Add the rest CURD routes in 'routes.js'__
+__1. Add the rest CRUD routes in 'routes.js'__
 ```javascript
 
 //Get route to show a tweet
@@ -344,10 +345,7 @@ __3. Complete the rest of the view__
 - Create 'views\tweets\edit.handlebars'
 
 ---
-### Optional - Normalising and Denormalising
-https://coderacademyedu.github.io/resources/unit_mongoose_relationships.html
-
-
+### Optional - Dynamic Routing
 
 __1. Create a 'routes' directory, move 'routes.js' inside, and rename it to 'index.js'__
 
@@ -358,12 +356,37 @@ const TweetController = require("./../controllers/tweet_controller");
 ```
 
 __2. Inside a 'routes' directory, create a 'tweet_routes.js' file to separate our routes__
+```javascript
+const express = require("express");
+const router = express.Router();
+const TweetController = require("./../controllers/tweet_controller");
 
-__3. Create a second model to practice normalising and normalising__
-```
-to do
-```
+//Get route to show all tweets
+router.get("/", TweetController.index)
 
+//Post route to create new tweets
+router.post("/", TweetController.create)
+
+//Get route for 'create form'
+router.get("/new", TweetController.newResource)
+
+//Get route to show a tweet
+router.get("/:id", TweetController.show)
+
+//Delete route to delete a tweet
+router.delete("/:id", TweetController.destroy)
+
+//Get route for 'edit form'
+router.get("/:id/edit", TweetController.edit)
+
+//PATCH route to update a tweet
+router.patch("/:id", TweetController.update)
+
+//PUT route to update a tweet
+router.put("/:id", TweetController.update)
+
+module.exports = router;
+```
 ---
 
 ### Optional - Jest Testing 
@@ -384,6 +407,7 @@ to do
 ##### Add validation to your endpoints and write passing tests for invalid data.
 
 ---
+-Note: Before running any test, make sure your have your ‘mongod’running.
 
 __1. Install Jest__
 - Jest: Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
@@ -568,7 +592,7 @@ describe("User creates a new tweet", ()=>{
 });
 ```
 
-- Passed Integration Test - Create (Test 2)
+- Passed Integration Test - Create (Test 2) :)
 ![integration-testing-create](./docs/integration-testing-create.JPG)
 
 __5.4 (Optional - Best Practice) Crate a 'connection.js' file inside 'database' diretory__
@@ -606,7 +630,7 @@ app.listen(port, ()=>{
 }); 
 ```
 
-- Still passed both tests
+- Still passed both tests :)
 
 __5.5 (Optional - Best Practice) Crate a 'setup.js' file inside 'tests' diretory__
 
@@ -669,15 +693,136 @@ describe("Received all tweets", ()=>{
     });
 });
 ```
-- Passed Integration Test - Index (Test 3)
-
+- Passed Integration Test - Index (Test 3) :)
 ![integration-testing-index](./docs/integration-testing-index.JPG)
 
-<!-- __.__
+
+---
+
+### Optional - Normalising Data (Create User Collection & Modify Tweet Collection)
+
+__1. Copy all the code from 'Tweet' to 'User', can replace 'tweet' to 'user' accordingly__
+
+- database\models\user_model.js
+- routes\user_routes.js (remember to change 'routes\index.js' as well)
+- (Note: The only real difference will be in the schema file, the forms and in the controller when saving and updating the data.)
+
+__2. Schema__
+
+__User Schema__
+- Move 'username' from 'tweet_schema.js' to 'user_schema.js' and change it to 'name'.
+- Also add 'bio' (with default value) and 'gender' (with enum) in 'user_schema.js'
+
+user_schema.js
+```javascript
+const UserSchema = new Schema({
+    name: {          
+        type: String,
+        required: true
+    },
+    bio: {
+        type: String,
+        default: ""
+    },
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'non binary'],
+        default: 'non binary'
+    }
+});
+
+```
+
+__Tweet Schema__
+- Remove 'username'
+- Add 'user' reference
+
+tweet_schema.js
+```javascript
+const Schema = mongoose.Schema; 
+
+const TweetSchema = new Schema({
+    post: {
+        type: String,
+        required: true
+    },
+    createAt: {
+        type: Date,
+        default: Date.now
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+    }
+});
+```
+
+__3. Controller__
+
+__Tweet Controller__
+1. Remember to require 'UserModel' here
+2. In 'create' and 'update' functions, remember to update 'username' to 'user'
+3. Update 'newResource' function with '.select("_id name")'
+4. Update 'show' function with '.populate("user")'
+
+```javascript
+const UserModel = require("./../database/models/user_model")
+
+async function create(req, res) {
+    let { user, post } = req.body;
+    let tweet = await TweetModel.create({ user, post })
+        .catch(err => res.status(500).send(err));
+    res.redirect("/tweets");
+}
+
+async function newResource(req, res){
+    let users = await UserModel.find().select("_id name");
+    res.render("tweets/new", { users });
+}
+
+async function show(req, res){
+    let { id } = req.params;
+    let tweet = await TweetModel.findById(id).populate("user");
+    res.render("tweets/show", { tweet })
+}
+
+async function update(req, res){
+    let { user, post } = req.body;
+    let { id } = req.params;
+    await TweetModel.findByIdAndUpdate(id, { user, post });
+    res.redirect(`/tweets/${id}`);
+}
+```
+
+__User Controller__
+- Remember to change 'create' and 'update' functions accordingly, as we just changed our data names to 'name', 'bio', 'gender'
+- Remember to update 'newResource' function, and change it to async-await
+
+__4. View__
+- Update all files in views\tweets
+- Update all files in views\users
+
+---
+### Optional - Denormalising
+<!-- 
+__.__
+__.__
+__.__
 __.__
 
-__.__
-__.__
-__.__
-__.__ -->
+
+```javascript
+
+```
+
+```javascript
+
+```
+
+```javascript
+
+```
+```javascript
+
+``` -->
 

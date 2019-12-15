@@ -11,14 +11,20 @@
 
         <form method="POST" action="/tweets">
             <div>
-                <label>Username</label> 
-                <input type="text" name="username" />
-            </div>
-            <div>
                 <label>Post</label>
                 <input type="text" name="post" />
             </div>
-            <input type="submit" value="Create Tweet" />
+            <div>
+                <label>User</label> 
+                <select name="user">
+                    {{#each users}}
+                    <option value="{{{this.id}}}">{{{this.name}}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div>
+                <input type="submit" value="Create Tweet" />
+            </div>
         </form>
     </body>
 </html>
