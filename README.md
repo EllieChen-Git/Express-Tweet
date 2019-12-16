@@ -896,9 +896,6 @@ views\tweets\show.handlebars
 __1. Install Dotenv__
 - Dotenv: a zero-dependency module that loads environment variables from a .env file into process.env. (https://www.npmjs.com/package/dotenv)
 
-```
-npm i dotenv
-```
 __2. Put .env in .gitignore__
 
 __3. Create a file called '.env' at root__
@@ -967,18 +964,77 @@ package.json
   },
 ```
 
-<!-- 
+### Optional - Set up Express Session
+
+__1. Install Express Session__
+- Exprss-session: Simple session middleware for Express (allows us to save information on the server, instead of locally in the browser or within the database. )
+
+__2. Update app.js__
+app.js
+```javascript
+const expressSession = require("express-session");
+
+// Express Session
+app.use(expressSession({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 60000
+    }
+}))
+```
+__3. Create SESSION_SECRET in .env__
+
+.env
+```javascript
+SESSION_SECRET=(name it anthing you like)
+```
+
+__4. Use express session to track page view counts__
+- Create Page Controller
+controllers\page_controller.js
+```javascript
+function index(req, res){
+    res.send("Welcome");
+}
+
+module.exports = {
+    index
+};
+```
+
+2. Update dates for Page Controller
+routes\index.js
+```javascript
+const PageController = require("./../controllers/page_controller");
+router.get("/", PageController.index);
+```
+
+__.__
+__.__
+
+```javascript
+```
+```javascript
+```
+```javascript
+```
+
+__.__
+__.__
+__.__
+__.__
 __.__
 
 
 
 
-```javascript
-```
 
 
-```javascript
-``` -->
+
+
+
 
 
 

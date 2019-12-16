@@ -7,6 +7,9 @@
         <title>Express Tweets</title>
     </head>
     <body>
+{{!-- Buttons to all Users & all Tweets --}}
+        <button onclick="location.href='http://localhost:3000/users'" type="button">Back to Users</button>
+        <button onclick="location.href='http://localhost:3000/tweets'" type="button">Back to Tweets</button>
 
 {{!--Display Tweet Details  --}}
         <h1>Tweet</h1>
@@ -22,16 +25,12 @@
             <input type="submit" value="Add Comments" />
         </form>
 
-{{!-- Display all comments on a Tweet --}}
+{{!-- Display all comments on Tweet --}}
         <ul>
             {{#each tweet.comments}}
             <li>{{this.body}} - {{this.createAt}}</li>
             {{/each}}
         </ul>
-
-
-        <button onclick="location.href='http://localhost:3000/users'" type="button">Back to Users</button>
-        <button onclick="location.href='http://localhost:3000/tweets'" type="button">Back to Tweets</button>
     </body>
 
 </html>

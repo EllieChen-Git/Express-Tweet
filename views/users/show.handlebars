@@ -7,16 +7,14 @@
         <title>Express Tweets</title>
     </head>
     <body>
+{{!--Display User Details  --}}
         <h1>User</h1>
-
         <p>Name: {{user.name}}</p>
         <p>Bio: {{user.bio}}</p>
         <p>Gender: {{user.gender}}</p>
 
-        <form>
-            {{!-- <input type="button" value="Back" onclick="history.back()"> --}}
-            <button onclick="location.href='http://localhost:3000/users'" type="button">Back to Users</button>
-            <button onclick="location.href='http://localhost:3000/tweets'" type="button">Back to Tweets</button>
-        </form>
+{{!-- Buttons to all Users & all Tweets --}}
+        <button onclick="location.href='http://localhost:3000/users'" type="button">Back to Users</button>
+        <button onclick="location.href='http://localhost:3000/tweets'" type="button">Back to Tweets</button>
     </body>
 </html>
