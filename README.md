@@ -893,8 +893,11 @@ views\tweets\show.handlebars
 ---
 ### Optional - Set up environment variables
 
-__1. Install Dotenv__
+__1. Install Dotenv (npm package)__
 - Dotenv: a zero-dependency module that loads environment variables from a .env file into process.env. (https://www.npmjs.com/package/dotenv)
+```
+npm i dotenv
+```
 
 __2. Put .env in .gitignore__
 
@@ -966,8 +969,12 @@ package.json
 
 ### Optional - Set up Express Session
 
-__1. Install Express Session__
+__1. Install Express Session (npm package)__
 - Exprss-session: Simple session middleware for Express (allows us to save information on the server, instead of locally in the browser or within the database. )
+
+```
+npm i express-session
+```
 
 __2. Update app.js__
 app.js
@@ -1013,8 +1020,129 @@ module.exports = {
 };
 ```
 
+__5. Store user credentials__
+- Update User Schema: destructing Schema and add 'email' & 'password' 
 
+```javascript
+// const mongoose = require("mongoose");
+// const Schema = mongoose.Schema; 
 
+const { Schema } = require("mongoose");
+
+const UserSchema = new Schema({
+    email: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true
+    }
+});
+```
+- Install 'Celebrate' (npm package): A joi validation middleware for Express 
+(https://www.npmjs.com/package/celebrate)
+```
+npm i celebrate
+```
+- Update routes for Authentication Controller
+
+routes\index.js
+```javascript
+const AuthenticationController = require("./../controllers/authentication_controller");
+const { celebrate, Joi, Segments } = require("celebrate");
+
+// Page Routes
+router.get("/dashboard", PageController.dashboard);
+
+// Authentication Routes
+router.get("/register", AuthenticationController.registerNew);
+
+router.post("/register", celebrate({
+    [Segments.BODY]: {
+        email: Joi.string().required(),
+        password: Joi.string().required()
+    }
+}), AuthenticationController.registerCreate);
+```
+- Create Authentication Controller
+controllers\authentication_controller.js
+
+```javascript
+const UserModel = require("./../database/models/user_model")
+
+function registerNew(req, res){
+    res.render("authentication/register");
+}
+
+async function registerCreate(req, res){
+    const { email, password } = req.body;
+    const user = await UserModel.create({ email, password });
+    req.session.user = user;
+    res.redirect("/dashboard");
+}
+
+module.exports = {
+    registerNew,
+    registerCreate
+};
+```
+- (Check the code in our User Model - nothing changed in this case)
+
+- Inside 'views' directory, create 'authentication' directory
+- Inside 'authentication' directory, create 'register.handlebars'
+views\authentication\register.handlebars
+```javascript
+<h1>Register</h1>
+
+<form method="POST" action="/register">
+    <div>
+        <label>Email</label>
+        <input type="text" name="email">
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" name="password" />
+    </div>
+    <div>
+        <input type="submit" name="Register" />
+    </div>
+</form>
+```
+
+- Update Page Controller
+controllers\page_controller.js
+```javascript
+function dashboard(req, res){
+    res.send("Welcome to Your Dashboard!")
+}
+```
+
+__6. Encrypt User Password__
+- Mongoose Bycrpt: Mongoose plugin encrypting field(s) with bcrypt and providing methods to encrypt and verify.
+
+- Install Mongoose Bycrypt
+```
+npm install mongoose-bcrypt --save
+```
+
+- Update user schema
+database\schemas\user_schema.js
+```javascript
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        bcrypt: true
+    },
+
+    UserSchema.plugin(require("mongoose-bcrypt"));
+```
+__.__
+__.__
+__.__
 __.__
 __.__
 
@@ -1022,15 +1150,6 @@ __.__
 ```
 ```javascript
 ```
-```javascript
-```
-
-__.__
-__.__
-__.__
-__.__
-__.__
-
 
 
 
