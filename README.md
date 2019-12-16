@@ -889,16 +889,97 @@ views\tweets\show.handlebars
         </ul>
 
 ```
+
+---
+### Optional - Set up environment variables
+
+__1. Install Dotenv__
+- Dotenv: a zero-dependency module that loads environment variables from a .env file into process.env. (https://www.npmjs.com/package/dotenv)
+
+```
+npm i dotenv
+```
+__2. Put .env in .gitignore__
+
+__3. Create a file called '.env' at root__
+.env
+```javascript
+DB_HOST=mongodb://localhost/tweet_app
+PORT=3000
+```
+__4. Update 'connection.js'__
+database\connection.js
+```javascript
+const mongoose = require("mongoose");
+
+//Database
+// async function connect(dbName){
+//     await mongoose.connect(`mongodb://localhost/${dbName}`, { 
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true 
+//     });
+//     mongoose.Promise = global.Promise;
+//     mongoose.connection.on("error", (error)=> {console.log(error)});
+//     return mongoose;
+// }
+
+mongoose.connect(process.env.DB_HOST, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true });
+mongoose.Promise = global.Promise;
+mongoose.connection.on("error", console.log);
+
+
+// module.exports = connect;
+```
+
+__5. Update 'index.js'__
+```javascript
+require("dotenv").config();
+// dbConnect("tweet_app")
+
+global.HTTPError = class HTTPError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+  
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, HTTPError);
+        }
+        this.name = "HTTPError";
+        this.statusCode = statusCode;
+    }
+};
+
+//Port
+// const port = 3000;
+app.listen(process.env.PORT, ()=>{
+    console.log(`Server is running on port ${process.env.PORT}`)
+}); 
+```
+
+__6. Update package.json__
+package.json
+
+```javascript
+  "scripts": {
+    "dev-server": "nodemon index.js",
+    "server": "forever -c \"nodemon --exitcrash -L\" index.js"
+  },
+```
+
 <!-- 
 __.__
 
-```javascript
 
-```
 
-__.__
 
 ```javascript
-
 ```
- -->
+
+
+```javascript
+``` -->
+
+
+
+

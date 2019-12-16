@@ -1,12 +1,25 @@
 //This is now our server
-const dbConnect = require("./database/connection")
-dbConnect("tweet_app")
+
+require("dotenv").config();
+require("./database/connection")
 
 //App.js
-const app = require("./app"); //Require our app.js file here
+const app = require("./app");
+
+global.HTTPError = class HTTPError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+  
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, HTTPError);
+        }
+        this.name = "HTTPError";
+        this.statusCode = statusCode;
+    }
+};
+
 
 //Port
-const port = 3000;
-app.listen(port, ()=>{
-    console.log(`Server is running on port ${port}`)
+app.listen(process.env.PORT, ()=>{
+    console.log(`Server is running on port ${process.env.PORT}`)
 }); 
