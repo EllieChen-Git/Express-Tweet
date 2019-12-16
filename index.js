@@ -1,6 +1,4 @@
 //This is now our server
-
-
 const dbConnect = require("./database/connection")
 dbConnect("tweet_app")
 

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema; 
+const CommentSchema = require("./comment_schema");
 
 const TweetSchema = new Schema({
     post: {
@@ -8,22 +9,15 @@ const TweetSchema = new Schema({
     },
     createAt: {
         type: Date,
-        default: Date.now
+        required: true,
+        default: Date.now()
     },
-    user: {
+    user: {  //normalising
         type: Schema.Types.ObjectId,
         ref: "user"
-    }
+    }, 
+    comments: [CommentSchema]      //denormalising
 });
-
-TweetSchema.pre("save", next =>{
-    let now = new Date();
-    if(!this.createAt){
-        this.createAt = now;
-    }
-    next();
-})
-
 
 module.exports = TweetSchema; //schema is not a model: we trun some schemas into models
 

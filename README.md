@@ -4,7 +4,8 @@
 - [Optional] HTML pages with express-handlebars.
 - MongoDB database implementation.
 - Dynamic Routing.
-- Document database normalising and denormalising (work in progress).
+- Document database normalising (referencing)
+- Document database denormalising (embedding).
 - Jest unit testing.
 - Jest/Supertest integration testing.
 
@@ -700,7 +701,7 @@ describe("Received all tweets", ()=>{
 
 ---
 
-### Optional - Normalising Data (Create User Collection & Modify Tweet Collection)
+### Optional - Normalising Data (Referencing Documents): Create User Collection & Modify Tweet Collection
 
 __1. Copy all the code from 'Tweet' to 'User', can replace 'tweet' to 'user' accordingly__
 
@@ -804,26 +805,100 @@ __4. View__
 - Update all files in views\users
 
 ---
-### Optional - Denormalising
+### Optional - Denormalising (Embedding Documents): Embedding 'Comments' document to 'Tweets'
+
+__1. Create Comment Schema__
+database\schemas\comment_schema.js
+```javascript
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const CommentSchema = new Schema({
+    body: {
+        type: String,
+        required: true
+    },
+    createAt: {
+        type: Date,
+        required: true,
+        default: Date.now
+    }
+});
+
+module.exports = CommentSchema;
+```
+__2. Embed CommentSchema into TweetSchema__
+
+database\schemas\tweet_schema.js
+```javascript
+const CommentSchema = require("./comment_schema");
+const TweetSchema = new Schema({
+        comments: [CommentSchema]
+});
+```
+__3. Create Comment Controller__
+controllers\comment_controller.js
+```javascript
+const TweetModel = require("./../database/models/tweet_model")
+
+async function create (req, res){
+    let { tweetId } = req.params;
+    let { body } = req.body;
+    let tweet = await TweetModel.findById(tweetId);
+    tweet.comments.push({ body });
+    await tweet.save();
+
+    res.redirect(`/tweets/${tweetId}`);
+}
+
+module.exports = { 
+    create
+};
+```
+
+__4. Remember to create Comment Routes & update Tweet routes__
+routes\comment_routes.js
+```javascript
+const express = require("express");
+const router = express.Router();
+const CommentController = require("./../controllers/comment_controller");
+
+router.post("/:tweetId", CommentController.create);
+
+module.exports = router;
+```
+
+__5. Create Comment form & display comments__
+
+views\tweets\show.handlebars
+
+```handlebars
+{{!-- Comment Create Form --}}
+        <form method="POST" action="/comments/{{tweet._id}}">
+            <div>
+                <textarea name="body"></textarea>
+            </div>
+            <input type="submit" value="Add Comments" />
+        </form>
+
+{{!-- Display all comments on a Tweet --}}
+        <ul>
+            {{#each tweet.comments}}
+            <li>{{this.body}} - {{this.createAt}}</li>
+            {{/each}}
+        </ul>
+
+```
 <!-- 
 __.__
-__.__
-__.__
-__.__
-
 
 ```javascript
 
 ```
 
-```javascript
-
-```
+__.__
 
 ```javascript
 
 ```
-```javascript
-
-``` -->
-
+ -->

@@ -7,14 +7,31 @@
         <title>Express Tweets</title>
     </head>
     <body>
+
+{{!--Display Tweet Details  --}}
         <h1>Tweet</h1>
         <p>Tweet: {{tweet.post}}</p>
         <p>Posted at: {{tweet.createAt}}</p>
         <p>User: <a href="/users/{{tweet.user._id}}">{{tweet.user.name}}</a></p>
-        <form>
-            {{!-- <input type="button" value="Back" onclick="history.back()"> --}}
-            <button onclick="location.href='http://localhost:3000/users'" type="button">Back to Users</button>
-            <button onclick="location.href='http://localhost:3000/tweets'" type="button">Back to Tweets</button>
+
+{{!-- Comment Create Form --}}
+        <form method="POST" action="/comments/{{tweet._id}}">
+            <div>
+                <textarea name="body"></textarea>
+            </div>
+            <input type="submit" value="Add Comments" />
         </form>
+
+{{!-- Display all comments on a Tweet --}}
+        <ul>
+            {{#each tweet.comments}}
+            <li>{{this.body}} - {{this.createAt}}</li>
+            {{/each}}
+        </ul>
+
+
+        <button onclick="location.href='http://localhost:3000/users'" type="button">Back to Users</button>
+        <button onclick="location.href='http://localhost:3000/tweets'" type="button">Back to Tweets</button>
     </body>
+
 </html>

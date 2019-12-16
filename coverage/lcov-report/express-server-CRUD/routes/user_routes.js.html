@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for express-server-CRUD/routes/tweet_routes.js</title>
+    <title>Code coverage report for express-server-CRUD/routes/user_routes.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -16,7 +16,7 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../../index.html">All files</a> / <a href="index.html">express-server-CRUD/routes</a> tweet_routes.js
+      <a href="../../index.html">All files</a> / <a href="index.html">express-server-CRUD/routes</a> user_routes.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
@@ -104,31 +104,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require("express");
 const router = express.Router();
-const TweetController = require("./../controllers/tweet_controller");
+const UserController = require("../controllers/user_controller");
 &nbsp;
-//Get route to show all tweets
-router.get("/", TweetController.index)
+//Get route to show all users
+router.get("/", UserController.index)
 &nbsp;
-//Post route to create new tweets
-router.post("/", TweetController.create)
+//Post route to create new users
+router.post("/", UserController.create)
 &nbsp;
 //Get route for 'create form'
-router.get("/new", TweetController.newResource)
+router.get("/new", UserController.newResource)
 &nbsp;
-//Get route to show a tweet
-router.get("/:id", TweetController.show)
+//Get route to show a user
+router.get("/:id", UserController.show)
 &nbsp;
-//Delete route to delete a tweet
-router.delete("/:id", TweetController.destroy)
+//Delete route to delete a user
+router.delete("/:id", UserController.destroy)
 &nbsp;
 //Get route for 'edit form'
-router.get("/:id/edit", TweetController.edit)
+router.get("/:id/edit", UserController.edit)
 &nbsp;
-//PATCH route to update a tweet
-router.patch("/:id", TweetController.update)
+//PATCH route to update a user
+router.patch("/:id", UserController.update)
 &nbsp;
-//PUT route to update a tweet
-router.put("/:id", TweetController.update)
+//PUT route to update a user
+router.put("/:id", UserController.update)
 &nbsp;
 module.exports = router;</pre></td></tr>
 </table></pre>
