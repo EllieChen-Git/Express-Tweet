@@ -1,5 +1,6 @@
 function index(req, res){
-    res.send("Welcome to Express Tweets");
+    req.session.views = req.session.views? req.session.views + 1 : 1;
+    res.send(`Welcome to Express Tweets!You have viewed this page ${req.session.views} time(s)`);
 }
 
 module.exports = {

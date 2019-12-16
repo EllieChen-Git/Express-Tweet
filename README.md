@@ -992,11 +992,20 @@ SESSION_SECRET=(name it anthing you like)
 ```
 
 __4. Use express session to track page view counts__
+
+- Update routes for Page Controller
+routes\index.js
+```javascript
+const PageController = require("./../controllers/page_controller");
+router.get("/", PageController.index);
+```
+
 - Create Page Controller
 controllers\page_controller.js
 ```javascript
 function index(req, res){
-    res.send("Welcome");
+    req.session.views = req.session.views? req.session.views + 1 : 1;
+    res.send(`Welcome to Express Tweets!You have viewed this page ${req.session.views} time(s)`);
 }
 
 module.exports = {
@@ -1004,12 +1013,7 @@ module.exports = {
 };
 ```
 
-2. Update dates for Page Controller
-routes\index.js
-```javascript
-const PageController = require("./../controllers/page_controller");
-router.get("/", PageController.index);
-```
+
 
 __.__
 __.__
