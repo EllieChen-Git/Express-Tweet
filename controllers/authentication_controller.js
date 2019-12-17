@@ -4,14 +4,17 @@ function registerNew(req, res){
     res.render("authentication/register");
 }
 
-async function registerCreate(req, res){
+async function registerCreate(req, res) {
     const { email, password } = req.body;
     const user = await UserModel.create({ email, password });
     req.session.user = user;
-    res.redirect("/dashboard");
+    // res.redirect("/dashboard");
+
+    res.redirect("/users/edit");
+    // res.render("users/edit", { user })
 }
 
 module.exports = {
     registerNew,
-    registerCreate
+    registerCreate,
 };

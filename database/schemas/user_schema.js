@@ -3,12 +3,7 @@
 
 const { Schema } = require("mongoose");
 
-
 const UserSchema = new Schema({
-    name: {          
-        type: String,
-        required: true
-    },
     email: {
         type: String,
         required: true,
@@ -19,6 +14,10 @@ const UserSchema = new Schema({
         required: true,
         trim: true,
         bcrypt: true
+    },
+    name: {          
+        type: String,
+        // required: true
     },
     bio: {
         type: String,

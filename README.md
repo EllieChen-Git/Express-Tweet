@@ -8,6 +8,9 @@
 - Document database denormalising (embedding).
 - Jest unit testing.
 - Jest/Supertest integration testing.
+- Set up Express session and env variables.
+- Store user credentail in Express session (with password encryption).
+- Validation (celebrate) on user registration.
 
 ---
 
@@ -970,7 +973,7 @@ package.json
 ### Optional - Set up Express Session
 
 __1. Install Express Session (npm package)__
-- Exprss-session: Simple session middleware for Express (allows us to save information on the server, instead of locally in the browser or within the database. )
+- Express-session: Simple session middleware for Express (allows us to save information on the server, instead of locally in the browser or within the database. )
 
 ```
 npm i express-session
@@ -1012,7 +1015,7 @@ controllers\page_controller.js
 ```javascript
 function index(req, res){
     req.session.views = req.session.views? req.session.views + 1 : 1;
-    res.send(`Welcome to Express Tweets!You have viewed this page ${req.session.views} time(s)`);
+    res.send(`Welcome to Express Tweets! You have viewed this page ${req.session.views} time(s)`);
 }
 
 module.exports = {
@@ -1039,7 +1042,11 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         trim: true
-    }
+    },
+    name: {          
+        type: String,
+        // required: true   //need to comment out this as we don't need it when registering user
+    },
 });
 ```
 - Install 'Celebrate' (npm package): A joi validation middleware for Express 
@@ -1081,7 +1088,8 @@ async function registerCreate(req, res){
     const { email, password } = req.body;
     const user = await UserModel.create({ email, password });
     req.session.user = user;
-    res.redirect("/dashboard");
+    // res.redirect("/dashboard");
+    res.render("users/edit", { user }) //after initial registration, will render 'edit user' view
 }
 
 module.exports = {
@@ -1107,7 +1115,7 @@ views\authentication\register.handlebars
         <input type="password" name="password" />
     </div>
     <div>
-        <input type="submit" name="Register" />
+        <input type="submit" value="Register" />
     </div>
 </form>
 ```
@@ -1140,7 +1148,9 @@ database\schemas\user_schema.js
 
     UserSchema.plugin(require("mongoose-bcrypt"));
 ```
-__.__
+
+
+<!-- __.__
 __.__
 __.__
 __.__
@@ -1149,7 +1159,7 @@ __.__
 ```javascript
 ```
 ```javascript
-```
+``` -->
 
 
 

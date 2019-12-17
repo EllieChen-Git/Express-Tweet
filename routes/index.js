@@ -28,5 +28,4 @@ router.post("/register", celebrate({
     }
 }), AuthenticationController.registerCreate);
 
-
 module.exports = router;
