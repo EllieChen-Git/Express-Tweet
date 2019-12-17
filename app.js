@@ -6,6 +6,8 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const expressSession = require("express-session");
+const MongoStore = require("connect-mongo")(expressSession);
+const mongoose = require("mongoose");
 const app = express();
 
 
@@ -20,8 +22,9 @@ app.use(expressSession({
     saveUninitialized: false,
     cookie: {
         expires: 60000
-    }
-}))
+    },
+    store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
 
 // Method Override
 app.use(methodOverride("_method", { methods: ["POST", "GET"]}));

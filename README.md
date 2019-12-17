@@ -23,6 +23,7 @@
 - Authentication
     1. Login
     2. Error handler middleware
+- Store Express Session data in MongoDB (through 'connect-mongo.')
 
 ---
 
@@ -1361,11 +1362,45 @@ app.js
 app.use(require("./middleware/error_handler_middleware"));
 ```
 
+---
 
+### Optional - Save Express Session Data in MongoDB
+
+1. Install connect-mongo
+
+```
+npm install connect-mongo --save
+```
+2. Update app.js
+
+app.js
+
+```javascript
+const MongoStore = require("connect-mongo")(expressSession);
+const mongoose = require("mongoose");
+
+app.use(expressSession({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 60000
+    },
+    store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
+
+```
 
 <!-- ```javascript
 ```
-
+```javascript
+```
+```javascript
+```
+```javascript
+```
+```javascript
+```
 
 __.__
 __.__
