@@ -1182,7 +1182,7 @@ const { authRedirect } = require("./../middleware/authorisation_middleware");
 router.get("/register", authRedirect, AuthenticationController.registerNew);
 ```
 
-##### - Create Log out function
+__3. Create Log out function__
 
 controllers\authentication_controller.js
 
@@ -1219,10 +1219,36 @@ routes\index.js
 ```javascript
 router.get("/logout", AuthenticationController.logout)
 ```
+__4. Dashboard Authorisation__
+- If users are not logged in, they can't proceed to dashboard (Instead, they will be redirected to landing page.)
 
+middleware\authorisation_middleware.js
+```javascript
+function authRedirect(req, res, next) {
+    if (req.session.user) {
+        return res.redirect("/dashboard");
+    }
+    return next();
+}
 
+function authorise(req, res, next){
+    if(req.session.user){
+        return next();
+    }
+    return res.redirect("/");
+}
 
+module.exports = {
+    authRedirect,
+    authorise
+}
+```
 
+routes\index.js
+```javascript
+const { authRedirect, authorise } = require("./../middleware/authorisation_middleware");
+router.get("/dashboard", authorise, PageController.dashboard); //Dashboard
+```
 
 __.__
 __.__
@@ -1230,21 +1256,30 @@ __.__
 __.__
 __.__
 __.__
-__.__
-
-
-
-
 
 
 ```javascript
 ```
-
 ```javascript
 ```
 ```javascript
 ```
-
+```javascript
+```
+```javascript
+```
+```javascript
+```
+```javascript
+```
+```javascript
+```
+```javascript
+```
+```javascript
+```
+```javascript
+```
 
 
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const PageController = require("./../controllers/page_controller");
 const AuthenticationController = require("./../controllers/authentication_controller");
 const { celebrate, Joi, Segments } = require("celebrate");
-const { authRedirect } = require("./../middleware/authorisation_middleware");
+const { authRedirect, authorise } = require("./../middleware/authorisation_middleware");
 //destructuring func from the middleware file
 
 // Dynamic Routing
@@ -33,6 +33,6 @@ router.get("/logout", AuthenticationController.logout)
 
 // Page Routes
 router.get("/", PageController.index); //Landing page
-router.get("/dashboard", PageController.dashboard); //Dashboard
+router.get("/dashboard", authorise, PageController.dashboard); //Dashboard
 
 module.exports = router;
