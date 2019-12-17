@@ -10,11 +10,19 @@ async function registerCreate(req, res) {
     req.session.user = user;
     // res.redirect("/dashboard");
 
-    res.redirect("/users/edit");
-    // res.render("users/edit", { user })
+    // res.render("users/edit", { user }) //Can achieve the same result with .render
+    res.redirect(`/users/${user._id}/edit`); 
 }
+
+function logout(req, res) {
+    req.session.destroy(() => {
+        res.redirect("/");
+    });
+}
+
 
 module.exports = {
     registerNew,
     registerCreate,
+    logout
 };

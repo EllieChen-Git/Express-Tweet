@@ -3,9 +3,11 @@ function index(req, res){
     res.send(`Welcome to Express Tweets! You have viewed this page ${req.session.views} time(s)`);
 }
 
-function dashboard(req, res){
-    res.send("Welcome to Your Dashboard!")
+function dashboard(req, res) {
+    const email = req.session.user.email;
+    res.render("pages/dashboard", { email });
 }
+
 
 
 module.exports = {

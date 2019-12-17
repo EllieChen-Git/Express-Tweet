@@ -3,6 +3,10 @@ const router = express.Router();
 const PageController = require("./../controllers/page_controller");
 const AuthenticationController = require("./../controllers/authentication_controller");
 const { celebrate, Joi, Segments } = require("celebrate");
+const { authRedirect } = require("./../middleware/authorisation_middleware");
+//destructuring func from the middleware file
+
+// Dynamic Routing
 const userRoutes = require("./user_routes");
 const tweetRoutes = require("./tweet_routes");
 const commentRoutes = require("./comment_routes");
@@ -14,12 +18,8 @@ router.use("/tweets", tweetRoutes);
 // Comment Routes
 router.use("/comments", commentRoutes);
 
-// Page Routes
-router.get("/", PageController.index); //Landing page
-router.get("/dashboard", PageController.dashboard); //Dashboard
-
 // Authentication Routes
-router.get("/register", AuthenticationController.registerNew);
+router.get("/register", authRedirect, AuthenticationController.registerNew);
 
 router.post("/register", celebrate({
     [Segments.BODY]: {
@@ -27,5 +27,12 @@ router.post("/register", celebrate({
         password: Joi.string().required()
     }
 }), AuthenticationController.registerCreate);
+
+router.get("/logout", AuthenticationController.logout)
+
+
+// Page Routes
+router.get("/", PageController.index); //Landing page
+router.get("/dashboard", PageController.dashboard); //Dashboard
 
 module.exports = router;

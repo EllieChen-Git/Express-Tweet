@@ -1089,7 +1089,8 @@ async function registerCreate(req, res){
     const user = await UserModel.create({ email, password });
     req.session.user = user;
     // res.redirect("/dashboard");
-    res.render("users/edit", { user }) //after initial registration, will render 'edit user' view
+     // res.render("users/edit", { user }) //Can achieve the same result with .render
+    res.redirect(`/users/${user._id}/edit`); 
 }
 
 module.exports = {
@@ -1149,17 +1150,100 @@ database\schemas\user_schema.js
     UserSchema.plugin(require("mongoose-bcrypt"));
 ```
 
+### Optional - Authorisation
 
-<!-- __.__
+- When users are logged in, they shouldn't be able to go to the '/register' route. (Instead, users should be re-directed to '/dashboard' if they try to hit '/register' route when logged in.)
+
+__1. Create our customised middleware for this__
+
+middleware\authorisation_middleware.js
+```javascript
+function authRedirect(req, res, next) {
+    //check if there's a session & there's a user property on the session
+    if (req.session && req.session.user) {
+        return res.redirect("/dashboard");
+    }
+
+    return next();
+}
+
+module.exports = {
+    authRedirect
+}
+```
+__2. Require our customised middleware in routes__
+
+routes\index.js
+```javascript
+const { authRedirect } = require("./../middleware/authorisation_middleware");
+//destructuring func from the middleware file
+
+// Authentication Routes
+router.get("/register", authRedirect, AuthenticationController.registerNew);
+```
+
+##### - Create Log out function
+
+controllers\authentication_controller.js
+
+```javascript
+function logout(req, res) {
+    req.session.destroy(() => {
+        res.redirect("/");
+    });
+}
+
+module.exports = {
+    logout
+};
+```
+
+controllers\page_controller.js
+```javascript
+function dashboard(req, res){
+    const email = req.session.user.email;
+    res.render("pages/dashboard", { email })
+}
+```
+
+views\pages\dashboard.handlebars
+```javascript
+<h1>Welcome to Your Dashboard</h1>
+
+<div>
+    <a href="/logout">Log out</a>
+</div>
+```
+
+routes\index.js
+```javascript
+router.get("/logout", AuthenticationController.logout)
+```
+
+
+
+
+
 __.__
 __.__
 __.__
 __.__
+__.__
+__.__
+__.__
+
+
+
+
+
+
+```javascript
+```
 
 ```javascript
 ```
 ```javascript
-``` -->
+```
 
 
 

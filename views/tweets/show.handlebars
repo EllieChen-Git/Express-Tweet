@@ -12,25 +12,29 @@
         <button onclick="location.href='http://localhost:3000/tweets'" type="button">Back to Tweets</button>
 
 {{!--Display Tweet Details  --}}
-        <h1>Tweet</h1>
-        <p>Tweet: {{tweet.post}}</p>
-        <p>Posted at: {{tweet.createAt}}</p>
-        <p>User: <a href="/users/{{tweet.user._id}}">{{tweet.user.name}}</a></p>
-
+        <div>
+            <h1>Tweet</h1>
+            <p>Tweet: {{tweet.post}}</p>
+            <p>Posted at: {{tweet.createAt}}</p>
+            <p>User: <a href="/users/{{tweet.user._id}}">{{tweet.user.name}}</a></p>
+        </div>
 {{!-- Comment Create Form --}}
-        <form method="POST" action="/comments/{{tweet._id}}">
-            <div>
-                <textarea name="body"></textarea>
-            </div>
-            <input type="submit" value="Add Comments" />
-        </form>
-
+        <div>
+            <form method="POST" action="/comments/{{tweet._id}}">
+                <div>
+                    <textarea name="body"></textarea>
+                </div>
+                <input type="submit" value="Add Comments" />
+            </form>
+        </div>
 {{!-- Display all comments on Tweet --}}
-        <ul>
+        <div>
+            <h1>Comments</h1>
             {{#each tweet.comments}}
-            <li>{{this.body}} - {{this.createAt}}</li>
+            <div>{{this.body}}</div>
+            <div>Posted at:{{this.createAt}}</div>
             {{/each}}
-        </ul>
+        </div>
     </body>
 
 </html>
