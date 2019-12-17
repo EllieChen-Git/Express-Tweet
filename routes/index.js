@@ -19,15 +19,24 @@ router.use("/tweets", tweetRoutes);
 router.use("/comments", commentRoutes);
 
 // Authentication Routes
-router.get("/register", authRedirect, AuthenticationController.registerNew);
 
+// User Registration
+router.get("/register", authRedirect, AuthenticationController.registerNew);
 router.post("/register", celebrate({
     [Segments.BODY]: {
         email: Joi.string().required(),
         password: Joi.string().required()
     }
 }), AuthenticationController.registerCreate);
-
+// User Login
+router.get("/login", authRedirect, AuthenticationController.loginNew);
+router.post("/login", celebrate({
+    [Segments.BODY]: {
+        email: Joi.string().required(),
+        password: Joi.string().required()
+    }
+}), AuthenticationController.loginCreate);
+// User Logout
 router.get("/logout", AuthenticationController.logout)
 
 

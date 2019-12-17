@@ -1,5 +1,8 @@
 # Express Tweets
 
+---
+
+### Features
 - Full CRUD resources (create, read, update and delete tweets and users).
 - [Optional] HTML pages with express-handlebars.
 - MongoDB database implementation.
@@ -8,9 +11,18 @@
 - Document database denormalising (embedding).
 - Jest unit testing.
 - Jest/Supertest integration testing.
-- Set up Express session and env variables.
-- Store user credentail in Express session (with password encryption).
-- Validation (celebrate) on user registration.
+- Express session:
+    1. Set up Express session and env variables.
+    2. Track view counts
+    3. User registration validation (with Celebrate). 
+    4. Store user credentail (with password encryption).
+- Authorisation (through customised middleware):
+    1. User registration
+    2. Logout
+    3. Dashboard authorisation)
+- Authentication
+    1. Login
+    2. Error handler middleware
 
 ---
 
@@ -1149,6 +1161,7 @@ database\schemas\user_schema.js
 
     UserSchema.plugin(require("mongoose-bcrypt"));
 ```
+---
 
 ### Optional - Authorisation
 
@@ -1176,7 +1189,7 @@ __2. Require our customised middleware in routes__
 routes\index.js
 ```javascript
 const { authRedirect } = require("./../middleware/authorisation_middleware");
-//destructuring func from the middleware file
+//Destructuring function from the middleware file
 
 // Authentication Routes
 router.get("/register", authRedirect, AuthenticationController.registerNew);
@@ -1250,7 +1263,110 @@ const { authRedirect, authorise } = require("./../middleware/authorisation_middl
 router.get("/dashboard", authorise, PageController.dashboard); //Dashboard
 ```
 
-__.__
+---
+
+### Optional - Authentication
+
+__1. Login Functionality (also add error handler middleware here)__
+- Need to create the login form, the two routes necessary to login and the controller methods attached to those routes
+
+views\authentication\login.handlebars
+```javascript
+<h1>Log In</h1>
+
+{{!-- Error message for invalid log in --}}
+{{#if error }}
+    <p>Error: {{error}}</p>
+{{/if}}
+
+{{!-- Log in form --}}
+<form method="POST" action="/login">
+    <div>
+        <label>Email</label>
+        <input type="text" name="email" />
+    </div>
+     <div>
+        <label>Password</label>
+        <input type="password" name="password" />
+    </div>
+    <div>
+        <input type="submit" value="Log In">
+    </div>
+</form>
+```
+
+controllers\authentication_controller.js
+```javascript
+function loginNew(req, res){
+    res.render("authentication/login");
+}
+
+async function loginCreate(req, res){
+    const { email, password} = req.body;
+    const user = await UserModel.findOne({ email });
+
+    //If user not existed in db, render login page with error message
+    if(!user){
+        return res.render("authentication/login", {error: "Invalid email & password"})
+    }
+
+     //If invalid password, render login page with error message
+    const valid = await user.verifyPassword(password);
+    //verifyPassword: method from Mongoose-bcrypt 
+    if(!valid){
+        return res.render("authentication/login", {error: "Invalid email & password"})
+    }
+
+    //If there's user & valid password, redirect to dashboard
+    req.session.user = user;
+    res.redirect("/dashboard")
+}
+
+module.exports = {
+    loginNew,
+    loginCreate
+};
+```
+
+routes\index.js
+
+```javascript
+router.get("/login", authRedirect, AuthenticationController.loginNew);
+
+router.post("/login", celebrate({
+    [Segments.BODY]: {
+        email: Joi.string().required(),
+        password: Joi.string().required()
+    }
+}), AuthenticationController.loginCreate);
+```
+
+- [Optional] Also add our customised error middleware here to handle error messages
+
+middleware\error_handler_middleware.js
+
+```javascript
+module.exports = function(err, req, res, next) {
+    if (err && err.name === "HTTPError") {
+        return res.status(err.statusCode).send(err.message);
+    }
+
+    return next(err);
+}
+```
+- Remember to require error handler in app.js
+app.js
+```javascript
+//Error Handler Middleware
+app.use(require("./middleware/error_handler_middleware"));
+```
+
+
+
+<!-- ```javascript
+```
+
+
 __.__
 __.__
 __.__
@@ -1258,6 +1374,7 @@ __.__
 __.__
 
 
+
 ```javascript
 ```
 ```javascript
@@ -1267,19 +1384,7 @@ __.__
 ```javascript
 ```
 ```javascript
-```
-```javascript
-```
-```javascript
-```
-```javascript
-```
-```javascript
-```
-```javascript
-```
-```javascript
-```
+``` -->
 
 
 

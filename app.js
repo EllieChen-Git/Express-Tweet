@@ -2,6 +2,7 @@
 
 const express = require("express");
 const exphbs = require("express-handlebars"); // [handlebars - optional]
+const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const expressSession = require("express-session");
@@ -29,8 +30,14 @@ app.use(methodOverride("_method", { methods: ["POST", "GET"]}));
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
+//Morgan
+app.use(morgan("combined"));
+
 //Routes
 app.use(require("./routes"));
+
+//Error Handler Middleware
+app.use(require("./middleware/error_handler_middleware"));
 
 //Remember to export app
 module.exports = app;
