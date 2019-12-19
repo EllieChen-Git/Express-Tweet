@@ -8,6 +8,7 @@ const methodOverride = require("method-override");
 const expressSession = require("express-session");
 const MongoStore = require("connect-mongo")(expressSession);
 const mongoose = require("mongoose");
+const passport = require("./config/passport");
 const app = express();
 
 
@@ -35,6 +36,10 @@ app.use(bodyParser.json());
 
 //Morgan
 app.use(morgan("combined"));
+
+//Passport (after express session, but before routes)
+app.use(passport.initialize()); //use Passport as middleware
+app.use(passport.session()); //when we want passport to keep track of our logged in user
 
 //Routes
 app.use(require("./routes"));

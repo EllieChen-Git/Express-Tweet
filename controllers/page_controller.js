@@ -4,10 +4,13 @@ function index(req, res){
 }
 
 function dashboard(req, res) {
-    const email = req.session.user.email;
-    res.render("pages/dashboard", { email });
+    if (req.user){
+        const email = req.user.email;
+        res.render("pages/dashboard", { email });
+    } else{
+        res.redirect("/register");
+    }
 }
-
 
 
 module.exports = {

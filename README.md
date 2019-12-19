@@ -20,10 +20,11 @@
     1. User registration
     2. Logout
     3. Dashboard authorisation)
-- Authentication
+- Authentication (hardcoding)
     1. Login
     2. Error handler middleware
 - Store Express Session data in MongoDB (through 'connect-mongo.')
+- Authentication through Middleware (Passport)
 
 ---
 
@@ -1366,12 +1367,12 @@ app.use(require("./middleware/error_handler_middleware"));
 
 ### Optional - Save Express Session Data in MongoDB
 
-1. Install connect-mongo
+__1. Install connect-mongo__
 
 ```
 npm install connect-mongo --save
 ```
-2. Update app.js
+__2. Update app.js__
 
 app.js
 
@@ -1391,8 +1392,192 @@ app.use(expressSession({
 
 ```
 
-<!-- ```javascript
+---
+
+### Optional - Authentication through Middleware (Passport)
+
+__- Passport__
+- Passport: Passport is Express-compatible authentication middleware for Node.js.
+- Passport Strategies: http://www.passportjs.org/packages/
+- NPM: https://www.npmjs.com/package/passport
 ```
+npm install passport --save
+```
+
+- Local strategy: Passport-local uses a username and password for authentication
+- NPM: http://www.passportjs.org/packages/passport-local/
+```
+npm install passport-local --save
+```
+__1. Create new directory 'config' to store our passport configuration__
+
+config\passport.js
+```javascript
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const UserModel = require("./../database/models/user_model")
+
+//serializeUser: stores info inside of our session relating to the passport user. 
+passport.serializeUser((user, done)=>{
+    done(null, user._id);
+});
+
+//deserializeUser(): gives us access to the info stored within the passport.user property of our session and allows us to return back data from the database that will be appended to req.user.
+passport.deserializeUser(async (id, done)=>{
+    try {
+        const user = await UserModel.findById(id);
+        done(null, user)
+    } catch (error){
+        done(error);
+    }
+});
+
+
+//LocalStrategy: 1st arg configuration object 'usernameField:', 2nd  callback function' async (email, password, done)'
+passport.use(new LocalStrategy({
+        usernameField: "email"
+    },
+    async (email, password, done) => {
+        const user = await UserModel.findOne({ email })
+            .catch(done);
+
+        if(!user || !user.verifyPasswordSync(password)){
+            return done(null, false);
+        }
+
+        return done(null, user);
+    }
+))
+
+module.exports = passport;
+```
+
+__2. Connect Passport to Our app__
+app.js
+```javascript
+const passport = require("./config/passport");
+
+//Passport (after express session, but before routes)
+app.use(passport.initialize()); //use Passport as middleware
+app.use(passport.session()); //when we want passport to keep track of our logged in user
+```
+__3. Use Passport in Routes (modify 'user login - post')__
+routes\index.js
+```javascript
+const passport = require("passport");
+
+// User Login
+router.post("/login", celebrate({
+    [Segments.BODY]: {
+        email: Joi.string().required(),
+        password: Joi.string().required()
+    }
+}), passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login"
+}));
+
+// router.get("/dashboard", authorise, PageController.dashboard); //Turn off 'authorise' to make code work
+router.get("/dashboard", PageController.dashboard); //Dashboard
+```
+__4. Update Our Validation Middleware (authorisation_middleware.js)__
+middleware\authorisation_middleware.js
+
+```javascript
+function authRedirect(req, res, next) {
+    if (req.user) {
+        return res.redirect("/register");
+    }
+    return next();
+}
+
+//Turn off 'authorise' to make code work
+// function authorise(req, res, next){
+//     if(req.user){
+//         return res.redirect("/dashboard");    
+//         return res.render("pages/dashboard"); //change to render to avoid continuing re-directing
+//     }
+//     return next();
+// }
+
+module.exports = {
+    authRedirect,
+    // authorise
+}
+```
+__5. Update Page Controller__
+
+controllers\page_controller.js
+```javascript
+function dashboard(req, res) {
+    if (req.user){
+        const email = req.user.email;
+        res.render("pages/dashboard", { email });
+    } else{
+        res.redirect("/register");
+    }
+}
+```
+__6. Update Authentication Controller__
+controllers\authentication_controller.js
+```javascript
+async function registerCreate(req, res, next) {
+    const { email, password } = req.body;
+    const user = await UserModel.create({ email, password });
+
+    req.login(user, (err)=>{
+        if(err){
+            return next(err);
+        }
+        // res.redirect("/dashboard")
+        res.redirect(`/users/${user._id}/edit`); 
+    })
+}
+
+// async function loginCreate(req, res){
+//     const { email, password} = req.body;
+//     const user = await UserModel.findOne({ email });
+
+//     //If user not existed in db, render login page with err msg
+//     if(!user){
+//         return res.render("authentication/login", {error: "Invalid email & password"});
+//     }
+
+//      //If password invalid, render login page with err msg
+//     const valid = await user.verifyPassword(password);
+//     //verifyPassword: method from Mongoose-bcrypt 
+//     if(!valid){
+//         return res.render("authentication/login", {error: "Invalid email & password"})
+//     }
+
+//     //If there's user & valid password, redirect to dashboard
+//     req.session.user = user;
+//     res.redirect("/dashboard")
+// }
+
+function logout(req, res) {
+    req.logout();
+    res.redirect("/");
+}
+
+module.exports = {
+    // loginCreate
+};
+```
+
+```
+IMPORTANT: After implementing 'passport - local strategy', need to turn off 'authorisation' on 'middleware\authorisation_middleware.js' and 'routes\index.js' to make it work
+```
+
+
+<!-- __.__
+__.__
+__.__
+__.__
+__.__
+__.__
+
+
 ```javascript
 ```
 ```javascript
@@ -1407,11 +1592,9 @@ __.__
 __.__
 __.__
 __.__
-
-
-
-```javascript
-```
+__.__
+__.__
+__.__
 ```javascript
 ```
 ```javascript

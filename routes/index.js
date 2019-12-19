@@ -5,6 +5,7 @@ const AuthenticationController = require("./../controllers/authentication_contro
 const { celebrate, Joi, Segments } = require("celebrate");
 const { authRedirect, authorise } = require("./../middleware/authorisation_middleware");
 //destructuring func from the middleware file
+const passport = require("passport");
 
 // Dynamic Routing
 const userRoutes = require("./user_routes");
@@ -28,6 +29,7 @@ router.post("/register", celebrate({
         password: Joi.string().required()
     }
 }), AuthenticationController.registerCreate);
+
 // User Login
 router.get("/login", authRedirect, AuthenticationController.loginNew);
 router.post("/login", celebrate({
@@ -35,13 +37,19 @@ router.post("/login", celebrate({
         email: Joi.string().required(),
         password: Joi.string().required()
     }
-}), AuthenticationController.loginCreate);
+}), 
+passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login"
+}));
+
 // User Logout
 router.get("/logout", AuthenticationController.logout)
 
 
 // Page Routes
 router.get("/", PageController.index); //Landing page
-router.get("/dashboard", authorise, PageController.dashboard); //Dashboard
+// router.get("/dashboard", authorise, PageController.dashboard); //Turn off 'authorise' to make code work
+router.get("/dashboard", PageController.dashboard); //Dashboard
 
 module.exports = router;
