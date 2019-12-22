@@ -1,9 +1,12 @@
 const express = require("express");
-const router = express.Router(); 
+const router = express.Router();
 const PageController = require("./../controllers/page_controller");
 const AuthenticationController = require("./../controllers/authentication_controller");
 const { celebrate, Joi, Segments } = require("celebrate");
-const { authRedirect, authorise } = require("./../middleware/authorisation_middleware");
+const {
+  authRedirect,
+  authorise
+} = require("./../middleware/authorisation_middleware");
 //destructuring func from the middleware file
 const passport = require("passport");
 
@@ -23,33 +26,46 @@ router.use("/comments", commentRoutes);
 
 // User Registration
 router.get("/register", authRedirect, AuthenticationController.registerNew);
-router.post("/register", celebrate({
+router.post(
+  "/register",
+  celebrate({
     [Segments.BODY]: {
-        email: Joi.string().required(),
-        password: Joi.string().required()
+      email: Joi.string().required(),
+      password: Joi.string().required()
     }
-}), AuthenticationController.registerCreate);
+  }),
+  AuthenticationController.registerCreate
+);
 
 // User Login
 router.get("/login", authRedirect, AuthenticationController.loginNew);
-router.post("/login", celebrate({
+router.post(
+  "/login",
+  celebrate({
     [Segments.BODY]: {
-        email: Joi.string().required(),
-        password: Joi.string().required()
+      email: Joi.string().required(),
+      password: Joi.string().required()
     }
-}), 
-passport.authenticate("local", {
-    successRedirect: "/dashboard",
-    failureRedirect: "/login"
-}));
+  }),
+  passport.authenticate("local", {
+    // successRedirect: "/dashboard",
+    failureRedirect: "/login",
+    session: false //when user logs in, don't use that session
+  }),
+  AuthenticationController.loginCreate
+);
 
 // User Logout
-router.get("/logout", AuthenticationController.logout)
-
+router.get("/logout", AuthenticationController.logout);
 
 // Page Routes
-router.get("/", PageController.index); //Landing page
-// router.get("/dashboard", authorise, PageController.dashboard); //Turn off 'authorise' to make code work
-router.get("/dashboard", PageController.dashboard); //Dashboard
+// Landing page
+router.get("/", PageController.index);
+// Dashboard
+router.get(
+  "/dashboard",
+  passport.authenticate("jwt", { session: false }),
+  PageController.dashboard
+);
 
 module.exports = router;

@@ -1,58 +1,43 @@
 const UserModel = require("./../database/models/user_model");
+const jwt = require("jsonwebtoken");
 
-function registerNew(req, res){
-    res.render("authentication/register");
+function registerNew(req, res) {
+  res.render("authentication/register");
 }
 
 async function registerCreate(req, res, next) {
-    const { email, password } = req.body;
-    const user = await UserModel.create({ email, password });
+  const { email, password } = req.body;
+  const user = await UserModel.create({ email, password });
 
-    req.login(user, (err)=>{
-        if(err){
-            return next(err);
-        }
-        // res.redirect("/dashboard")
-        res.redirect(`/users/${user._id}/edit`); 
-    })
+  req.login(user, err => {
+    if (err) {
+      return next(err);
+    }
+    // res.redirect("/dashboard")
+    res.redirect(`/users/${user._id}/edit`);
+  });
 }
 
-function loginNew(req, res){
-    res.render("authentication/login");
+function loginNew(req, res) {
+  res.render("authentication/login");
 }
 
-
-// async function loginCreate(req, res){
-//     const { email, password} = req.body;
-//     const user = await UserModel.findOne({ email });
-
-//     //If user not existed in db, render login page with err msg
-//     if(!user){
-//         return res.render("authentication/login", {error: "Invalid email & password"});
-//     }
-
-//      //If password invalid, render login page with err msg
-//     const valid = await user.verifyPassword(password);
-//     //verifyPassword: method from Mongoose-bcrypt 
-//     if(!valid){
-//         return res.render("authentication/login", {error: "Invalid email & password"})
-//     }
-
-//     //If there's user & valid password, redirect to dashboard
-//     req.session.user = user;
-//     res.redirect("/dashboard")
-// }
+function loginCreate(req, res) {
+  const token = jwt.sign({ sub: req.user._id }, process.env.JWT_SECRET); //passport append user to req.user
+  res.cookie("jwt", token); //setting our JWT token as a cookie name JWT.
+  res.redirect("/dashboard");
+}
 
 function logout(req, res) {
-    req.logout();
-    res.redirect("/");
+  req.logout();
+  res.cookie("jwt", null, { maxAge: -1 }); //remove cookies from our browser by setting it expiration date to sometime in the past.
+  res.redirect("/");
 }
 
-
 module.exports = {
-    registerNew,
-    registerCreate,
-    logout,
-    loginNew,
-    // loginCreate
+  registerNew,
+  registerCreate,
+  logout,
+  loginNew,
+  loginCreate
 };
